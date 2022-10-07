@@ -17,18 +17,30 @@
                    <div class="card">
 		                <h2> Estado Actual </h2>
                         <table>
+                            {% if state is none %}
                             <tr>
-                                <td><a href="/manual/blink" class="button ambar" {% if active and (action == 'blink' or action == 'on') %} disabled {% endif %}>INTERMITENTE</a></td>
-                                <td><a href="/manual/red" class="button red" {% if active and (action == 'blink' or action == 'on') %} disabled {% endif %}>EMERGENCIA</a></td>
+                                <td colspan="2">
+                                    <div style="color: #F44336">
+                                        Debe de inicializar desde el gestor
+                                        <a href="/" class="button blue">ACTUALIZAR</a>
+                                    </div>
+                                </td>
+                            </tr>                            
+                            {% endif %}
+                            {% if state is not none %}
+                            <tr>
+                                <td><a href="/manual/blink" class="button ambar" {% if state['active'] and (state['action'] == 'blink' or state['action'] == 'on') %} disabled {% endif %}>INTERMITENTE</a></td>
+                                <td><a href="/manual/red" class="button red" {% if state['active'] and (state['action'] == 'blink' or state['action'] == 'on') %} disabled {% endif %}>EMERGENCIA</a></td>
                             </tr>
                             <tr>
-                                <td><a href="/manual/plan" class="button blue" {% if active and (action == 'blink' or action == 'on') %} disabled {% endif %}>EJECUTAR PLAN</a></td>
+                                <td><a href="/manual/plan" class="button blue" {% if state['active'] and (state['action'] == 'blink' or state['action'] == 'on') %} disabled {% endif %}>EJECUTAR PLAN</a></td>
                                 <td><a href="/manual/off" class="button grey">APAGAR</a></td>
-                            </tr>
+                            </tr>                      
+                            {% endif %}
                         </table>
 
-		                <h4> EVENTO ==>  {{ action }}</h4>
-		                <h4> LED ==>  {{ led }}</h4>
+		                <h4> EVENTO ==>  {{ state['action'] }}</h4>
+		                <h4> LED ==>  {{ state['led'] }}</h4>
                    </div>
                </td>
                <td style="vertical-align:top;">            
@@ -39,17 +51,17 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        {% for f in fases %}
+                                        {% for f in plan['fases'] %}
                                         <th>FASE {{ f }}</th>
                                         {% endfor %}
                                         <th>DURACI&Oacute;N</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for inter in intervals %}
+                                    {% for inter in plan['intervals'] %}
                                     <tr>
                                         <td>{{ inter.number }}</td>
-                                        {% for fase in fases %}                                                                        
+                                        {% for fase in plan['fases'] %}                                                                        
                                         <td>
                                             {% if inter['fase' + fase|string] is not none %}
                                             <select class="color_{{ inter['fase' + fase|string] }}" id="fase_{{ inter.number }}_{{ fase|string }}" name="fase_{{ inter.number }}_{{ fase|string }}" onchange="changeState({{ inter.number }}, {{ fase }})">
@@ -70,8 +82,10 @@
                                     </tr>
                                     {% endfor %}
                                 </tbody>
-                            </table><br />
+                            </table><br />                            
+                            {% if plan is not none %}
                             <button type="submit" class="button green">GUARDAR PLAN</button>
+                            {% endif %}
                         </form>
                     </div>
                </td>

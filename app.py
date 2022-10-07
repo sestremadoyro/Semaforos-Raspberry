@@ -8,6 +8,7 @@ from gpiozero import LED, TrafficLights
 from models.plan import Plan
 from models.trafficLight import TLight
 from models.state import State
+from utils.sensor import Sensor
 app = Flask(__name__)
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -19,19 +20,7 @@ lights = []
 for tr in list:
     lights.insert(tr['number'], TrafficLights(tr['pins'][0], tr['pins'][1], tr['pins'][2]))
 
-#lights = [
-#    TrafficLights(4, 3, 2),
-#    TrafficLights(22, 27, 17),
-#    TrafficLights(11, 9, 10),
-#    TrafficLights(18, 15, 14),
-#    TrafficLights(24, 0, 23),
-#    TrafficLights(7, 8, 25),
-#]
 
-
-#lights = TrafficLights(17, 27, 22)
-#lights.off()
-#initialize GPIO status variables
 ledRedSts = 0
 ledYlwSts = 0
 ledGrnSts = 0
@@ -62,17 +51,32 @@ def index():
         plan['intervals'] = intervals
         oplan.update(plan, {'intervals': plan['intervals']})
 
+    #templateData = {
+    #	'action'  : '',
+    #	'led'  : '',
+    #	'duration'  : 0,
+    #	'active'  : False,
+    #	'nroIntervals'  : 0,
+    #	'nroFases'  : 0,
+    #	'intervals'  : [],
+    #	'fases'  : [],
+    #}
     templateData = {
-      		'action'  : state['action'],
-      		'led'  : state['led'],
-      		'duration'  : state['duration'],
-      		'active'  : state['active'],
-      		'nroIntervals'  : plan['nroIntervals'],
-      		'nroFases'  : plan['nroFases'],
-      		'intervals'  : plan['intervals'],
-      		'fases'  : plan['fases'],
-              
-      	}
+    	'state'  : state,
+    	'plan'  : plan
+    }
+    #if state is not None:
+    #    templateData['action'] = state['action']
+    #    templateData['led'] = state['led']
+    #    templateData['duration'] = state['duration']
+    #    templateData['active'] = state['active']
+
+    #if plan is not None:
+    #    templateData['nroIntervals'] = plan['nroIntervals']
+    #    templateData['nroFases'] = plan['nroFases']
+    #    templateData['intervals'] = plan['intervals']
+    #    templateData['fases'] = plan['fases']
+
     return render_template('index.html', **templateData)
 
 
@@ -80,26 +84,22 @@ def index():
 def manual(action):
     ostate = State()
     oplan = Plan()
-    if action == "red":
-        ostate.save({'action': 'on', 'active': True, 'duration': -1, 'led': 'R'})
-    if action == "off":
-        ostate.save({'action': 'off', 'active': False, 'duration': -1, 'led': ''})
-    if action == "blink":
-        ostate.save({'action': 'blink', 'active': True, 'duration': -1, 'led': ''})
-    if action == "plan":
-        ostate.save({'action': 'plan', 'active': True, 'duration': -1, 'led': ''})
-    state_execute()
     state = ostate.get()
+    if state is not None:
+        if action == "red":
+            ostate.save({'action': 'on', 'active': True, 'duration': -1, 'led': 'R'})
+        if action == "off":
+            ostate.save({'action': 'off', 'active': False, 'duration': -1, 'led': ''})
+        if action == "blink":
+            ostate.save({'action': 'blink', 'active': True, 'duration': -1, 'led': ''})
+        if action == "plan":
+            ostate.save({'action': 'plan', 'active': True, 'duration': -1, 'led': ''})
+        state_execute()
+        state = ostate.get()
     plan = oplan.first({'active': True})
     templateData = {
-      		'action'  : state['action'],
-      		'led'  : state['led'],
-      		'duration'  : state['duration'],
-      		'active'  : state['active'],
-      		'nroIntervals'  : plan['nroIntervals'],
-      		'nroFases'  : plan['nroFases'],
-      		'intervals'  : plan['intervals'],
-      		'fases'  : plan['fases'],
+    	'state'  : state,
+    	'plan'  : plan
 	}
     return render_template('index.html', **templateData)
 
@@ -259,6 +259,14 @@ def get_state():
                 'red': actuator.red.is_lit
             })
 
+        moments = 0
+        executing = ''
+        if plan is not None: 
+            moments = plan['moments']
+            
+        if model['executing'] is not None: 
+            executing = model['executing'].isoformat()
+
         return jsonify({
             'action': model['action'],
             'led': model['led'],
@@ -267,8 +275,8 @@ def get_state():
             'interval': model['interval'],
             'working': model['working'],
             'accumulated': model['accumulated'],
-            'moments': plan['moments'],
-            'executing': model['executing'].isoformat(),
+            'moments': moments,
+            'executing': executing,
             'fases': fases
         })
     else:
@@ -333,6 +341,51 @@ def state_execute():
         mimetype='application/json'
     )
     return response
+
+
+@app.route("/calibrate", methods=['GET'])
+def calibrate():    
+    sen = Sensor()
+    actuator = lights[0]
+
+    off_min = 100
+    off_max = 0
+    actuator.off();
+    i = 1
+    while i <= 10:
+        value = sen.read()
+        if value < off_min:
+            off_min = value
+        if value > off_max:
+            off_max = value
+        sleep(200/1000)
+        i += 1
+
+    on_min = 100
+    on_max = 0
+    actuator.green.on();
+    i = 1
+    while i <= 10:
+        value = sen.read()
+        if value < on_min:
+            on_min = value
+        if value > on_max:
+            on_max = value
+        sleep(200/1000)
+        i += 1
+    
+    actuator.off();
+
+    return jsonify([{
+        'mode': 'OFF',
+        'min': off_min,
+        'max': off_max
+    },{
+        'mode': 'ON',
+        'min': on_min,
+        'max': on_max,
+    }])
+
 
 state_execute();
 

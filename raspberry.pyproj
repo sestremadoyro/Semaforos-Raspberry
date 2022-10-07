@@ -34,6 +34,7 @@
   <ItemGroup>
     <Folder Include="app\" />
     <Folder Include="models\" />
+    <Folder Include="utils\" />
     <Folder Include="templates\" />
     <Folder Include="static\" />
   </ItemGroup>
@@ -68,6 +69,7 @@
     <Compile Include="task.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="utils\sensor.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
