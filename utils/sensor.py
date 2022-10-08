@@ -19,3 +19,15 @@ class Sensor:
         desv = np.std(dato)        
         dato = []
         return round(0.002103*desv,2)
+
+    def readLight(self):
+        dato = []
+        i = 1
+        while i <= 20:
+            values0 = adc.read_adc(0, gain=GAIN)
+            dato.append(values0)
+            i += 1
+        
+        desv = np.std(dato)        
+        dato = []
+        return round(0.002103*desv,2)

@@ -9,6 +9,7 @@ from models.plan import Plan
 from models.trafficLight import TLight
 from models.state import State
 from models.output import Output
+from utils.sensor import Sensor
 import datetime
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -30,10 +31,12 @@ plan = oplan.first({'active': True})
 
 ostate = State()
 state = ostate.get()
+sen = Sensor()
 
 ooutput = Output()
+hour = datetime.datetime.now().strftime("%X")
 
-if plan is not None and state is not None and state['action'] == 'plan' and state['active']:
+if plan is not None and state is not None and state['action'] == 'plan' and state['active'] and hour >= (plan['startHour'] + ':00') and hour < (plan['endHour'] + ':00'):
     ostate.execute(True)
     next = True
     outputs = []
@@ -82,7 +85,8 @@ if plan is not None and state is not None and state['action'] == 'plan' and stat
             output['duration'] += inter['duration']
             output['intervals'].insert(inter['number']-1,{
                 'number': inter['number'],
-                'duration': inter['duration'],
+                'duration': inter['duration'],                
+                'sensor': sen.readLight(),
                 'fases': fases
             })
         
@@ -107,10 +111,17 @@ if plan is not None and state is not None and state['action'] == 'plan' and stat
             next = False
                        
         state = ostate.get()
-        if state is not None and state['action'] == 'plan' and state['active']:
+        if state is not None and state['action'] == 'plan' and state['active'] and next == True:
             next = True
         else:
             next = False
+
+        hour = datetime.datetime.now().strftime("%X")
+        if hour >= (plan['startHour'] + ':00') and hour <= (plan['endHour'] + ':00') and next == True:
+            next = True
+        else:
+            next = False
+
 
 ostate.save({'working': False})
 sys.exit()
