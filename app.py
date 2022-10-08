@@ -52,16 +52,6 @@ def index():
         plan['intervals'] = intervals
         oplan.update(plan, {'intervals': plan['intervals']})
 
-    #templateData = {
-    #	'action'  : '',
-    #	'led'  : '',
-    #	'duration'  : 0,
-    #	'active'  : False,
-    #	'nroIntervals'  : 0,
-    #	'nroFases'  : 0,
-    #	'intervals'  : [],
-    #	'fases'  : [],
-    #}
     templateData = {
     	'state'  : state,
     	'plan'  : plan
@@ -256,6 +246,7 @@ def get_state():
             index = int(fase)-1
             actuator = lights[index]
             fases.insert(index,{
+                'fase': fase,
                 'green':actuator.green.is_lit,
                 'amber': actuator.amber.is_lit,
                 'red': actuator.red.is_lit
