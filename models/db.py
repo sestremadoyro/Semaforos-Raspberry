@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import pymongo
+from time import sleep
 
 # Provide the mongodb atlas url to connect python to mongodb using pymongo
 # admin:123456@
