@@ -167,3 +167,7 @@ select.color_IN {
 select.color_OFF {
     background: #e0e0e0;
 }
+
+h4 {
+    margin: 8px 0;
+}
