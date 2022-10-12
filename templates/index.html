@@ -16,6 +16,8 @@
                <td style="vertical-align:top; width: 350px">
                    <div class="card">
 		                <h2> Estado Actual </h2>
+		                <h4> Hostname ==>  {{ host['hostname'] }}</h4>
+		                <h4> IP ==>  {{ host['ip'] }}</h4>
                         <table>
                             {% if state is none %}
                             <tr>

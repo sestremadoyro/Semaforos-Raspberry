@@ -2,7 +2,6 @@
 	Raspberry Pi GPIO Status and Control
 '''
 import RPi.GPIO as GPIO
-import socket
 from flask import Flask, jsonify, render_template, request, url_for
 from time import sleep
 from gpiozero import LED, TrafficLights
@@ -10,10 +9,12 @@ from models.plan import Plan
 from models.trafficLight import TLight
 from models.state import State
 from utils.sensor import Sensor
+from utils.lib import Lib
 app = Flask(__name__)
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
+lib = Lib()
 tlight = TLight()
 list = tlight.getLights()
 
@@ -52,9 +53,12 @@ def index():
         plan['intervals'] = intervals
         oplan.update(plan, {'intervals': plan['intervals']})
 
+
+
     templateData = {
     	'state'  : state,
-    	'plan'  : plan
+    	'plan'  : plan,
+        'host'  : lib.host()
     }
     #if state is not None:
     #    templateData['action'] = state['action']
@@ -383,23 +387,7 @@ def calibrate():
 
 @app.route("/host", methods=['GET'])
 def get_host():    
-    hostname = socket.gethostname()
-
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.settimeout(0)
-    try:
-        # doesn't even have to be reachable
-        s.connect(('10.254.254.254', 1))
-        IP = s.getsockname()[0]
-    except Exception:
-        IP = '127.0.0.1'
-    finally:
-        s.close()
-    
-    return jsonify({
-        'hostname': hostname,
-        'ip': IP
-    })
+    return jsonify(lib.host())
 
 
 state_execute();
