@@ -21,8 +21,11 @@ class TLight:
         self.db = db.getClient()
                 
     def getList(self):
-        trafficLights = self.db.trafficLights.find({})
-        return trafficLights
+        if self.db != None:
+            trafficLights = self.db.trafficLights.find({})
+            return trafficLights
+        else:
+            return []
 
     def getLights(self):
         len = self.getList().count()

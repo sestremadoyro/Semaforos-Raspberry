@@ -78,13 +78,13 @@ def manual(action):
     state = ostate.get()
     if state is not None:
         if action == "red":
-            ostate.save({'action': 'on', 'active': True, 'duration': -1, 'led': 'R'})
+            ostate.save({'action': 'on', 'state': 'ER', 'active': True, 'duration': -1, 'led': 'R'})
         if action == "off":
-            ostate.save({'action': 'off', 'active': False, 'duration': -1, 'led': ''})
+            ostate.save({'action': 'off', 'state': 'OFF', 'active': False, 'duration': -1, 'led': ''})
         if action == "blink":
-            ostate.save({'action': 'blink', 'active': True, 'duration': -1, 'led': ''})
+            ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': -1, 'led': ''})
         if action == "plan":
-            ostate.save({'action': 'plan', 'active': True, 'duration': -1, 'led': ''})
+            ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': -1, 'led': ''})
         state_execute()
         state = ostate.get()
     plan = oplan.first({'active': True})

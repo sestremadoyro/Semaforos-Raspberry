@@ -8,11 +8,16 @@ CONNECTION_STRING = "mongodb://localhost:27017/raspberry"
 class Db:
 
     def getClient(self):
-        client = MongoClient(CONNECTION_STRING)
+        try:
+            client = MongoClient(CONNECTION_STRING)
+            return client['raspberry']
+        except pymongo.errors.ConnectionFailure as e:
+            print(e)
+        
         #print(client.list_database_names())
         
         #print(client['raspberry'].list_collection_names())
         #client['raspberry'].reviews.drop()
 
         # Create the database for our example (we will use the same database throughout the tutorial
-        return client['raspberry']
+        return None        
