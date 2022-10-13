@@ -30,6 +30,13 @@ class Lib:
         dt = datetime.now()
         # get day of week as an integer
         return dt.isoweekday()
+
+    def seconds(self, start, end):
+        if (start == '' or start is None) or (end == '' or end is None): 
+            return 30
+        sec1 = (int(start[0:2]) * 60 * 60) + (int(start[-2:]) * 60) 
+        sec2 = (int(end[0:2]) * 60 * 60) + (int(end[-2:]) * 60) 
+        return sec2 - sec1
     
     def verifyWeek(self):
         dfw = self.weekday()
@@ -50,7 +57,11 @@ class Lib:
                     ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': -1, 'led': '', 'startHour': pl['start'], 'endHour': pl['end']})
                 if pl['state'] == "FN" and pl['plan'] is not None:
                     ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': -1, 'led': '', 'startHour': pl['start'], 'endHour': pl['end']})
-                    oplan.deleteAll()
-                    oplan.create(pl['plan'])
+                    plan = oplan.first({})
+                    if plan is None:
+                        oplan.create(pl['plan'])
+                    else:
+                        oplan.update(plan, pl['plan'])
+                    
 
                 return

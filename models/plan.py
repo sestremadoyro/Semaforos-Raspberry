@@ -27,7 +27,7 @@ class Plan:
 
     def create(self, data = {}):
         data['created'] = datetime.datetime.now()
-        result = self.db.plans.insert_one(data)
+        result = self.db.plans.insert(data)
         return result
 
     def update(self, plan, data):
@@ -35,7 +35,7 @@ class Plan:
         return plan
 
     def deleteAll(self):
-        return self.db['plans'].delete_many({})
+        return self.db['plans'].delete({}) 
 
     def getList(self, filter = {}):
         plans = self.db.plans.find(filter)

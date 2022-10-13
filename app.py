@@ -85,7 +85,7 @@ def manual(action):
         if action == "off":
             ostate.save({'action': 'off', 'state': 'OFF', 'active': False, 'duration': -1, 'led': '', 'startHour': '00:00', 'endHour': '23:59'})
         if action == "blink":
-            ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': -1, 'led': '', 'startHour': '00:00', 'endHour': '23:59'})
+            ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': -1, 'led': 'A', 'startHour': '00:00', 'endHour': '23:59'})
         if action == "plan":
             ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': -1, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
         state_execute()
@@ -183,8 +183,6 @@ def plan_list():
     plan = Plan()
     
     list = plan.getList({'active': True})
-    #for x in list:
-    #    print(x)
 
     response = app.response_class(
         response='true',
@@ -298,13 +296,12 @@ def state_execute():
                 actuator = lights[int(fase)-1]
                 actuator.off()
 
-            print(model)
             if model['active']:
                 for fase in model['fases']:
                     led = model['led']
                     actuator = lights[int(fase)-1]
                     if led == '' and model['action'] == 'blink':
-                        led == 'A'
+                        led = 'A'
 
                     if led == 'R':
                         actuator = actuator.red
@@ -323,16 +320,20 @@ def state_execute():
                 if model['state'] == 'TR' and model['action'] == 'blink' and model['reds'] is not None:
                     for fase in model['reds']:
                         actuator = lights[int(fase)-1]
-                        actuator.off()
+                        actuator.amber.off()
                         actuator.red.blink()
 
-                ostate.execute(False)
+                ostate.execute(True)
+
                 exec = 'true'
                 if model['duration'] > 0:
                     sleep(model['duration'])
                     for fase in model['fases']:
                         actuator = lights[int(fase)-1]
                         actuator.off()
+
+            if model['active'] == False:
+                ostate.execute(False)
 
     response = app.response_class(
         response = exec,

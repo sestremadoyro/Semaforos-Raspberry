@@ -25,26 +25,82 @@ list = tlight.getLights()
 ostate = State()
 state = ostate.get()
 
-if state is not None and state['working'] == False:
+hour = datetime.datetime.now().strftime("%X")
 
-    if state['state'] != 'ER' and state['state'] != 'TR':
-        lights = []
-        for tr in list:
-            lights.insert(tr['number'], TrafficLights(tr['pins'][0], tr['pins'][1], tr['pins'][2]))
+if state is not None and state['working'] == False and hour >= (state['startHour'] + ':00') and hour < (state['endHour'] + ':00'):
 
-        # turn leds OFF 
-        for x in lights:
-            x.off();
+    lights = []
+    for tr in list:
+        lights.insert(tr['number'], TrafficLights(tr['pins'][0], tr['pins'][1], tr['pins'][2]))
 
-        oplan = Plan()
-        plan = oplan.first({'active': True})
-        sen = Sensor()
+    # turn leds OFF 
+    for x in lights:
+        x.off();
     
-        ooutput = Output()
-        hour = datetime.datetime.now().strftime("%X")
+    if (state['action'] == 'on' and state['state'] == 'ER') or (state['action'] == 'blink' and state['state'] == 'TR') and state['active']:
+        ostate.execute(True)
+        next = True
 
-    if plan is not None and state['action'] == 'plan' and state['active'] and hour >= (plan['startHour'] + ':00') and hour < (plan['endHour'] + ':00'):
-        print('task started => ' + hour)
+        for fase in state['fases']:
+            led = state['led']
+            actuator = lights[int(fase)-1]
+            if led == '' and state['action'] == 'blink':
+                led = 'A'
+
+            if led == 'R':
+                actuator = actuator.red
+            if led == 'A':
+                actuator = actuator.amber
+            if led == 'V':
+                actuator = actuator.green
+            actuator.off()
+            if state['action'] == 'on':
+                actuator.on()
+            if state['action'] == 'blink':
+                actuator.blink()
+
+        if state['action'] == 'blink' and state['reds'] is not None:
+            for fase in state['reds']:
+                actuator = lights[int(fase)-1]
+                actuator.amber.off()
+                actuator.red.blink()
+        
+        secs = lib.seconds(state['startHour'],state['endHour'])
+        acum = 0        
+        add = 30
+
+        while next == True:   
+            sleep(add)
+            add = 30
+            if secs - acum < 30:
+                add = secs - acum
+            acum = acum + add
+
+            state = ostate.get()
+            if state is not None and (state['action'] == 'on' and state['state'] == 'ER') or (state['action'] == 'blink' and state['state'] == 'TR') and state['active'] and next == True:
+                next = True
+            else:
+                next = False
+
+            hour = datetime.datetime.now().strftime("%X")
+            if state is not None and hour >= (state['startHour'] + ':00') and hour <= (state['endHour'] + ':00') and next == True:
+                next = True
+            else:
+                next = False
+
+            if acum < secs and next == True:
+                next = True
+            else:
+                next = False
+
+    
+    oplan = Plan()
+    plan = oplan.first({'active': True})
+    
+    if plan is not None and state['action'] == 'plan' and state['active']:
+        sen = Sensor()    
+        ooutput = Output()
+
         ostate.execute(True)
         next = True
         outputs = []
@@ -84,7 +140,7 @@ if state is not None and state['working'] == False:
                         'amber': actuator.amber.is_lit,
                         'green': actuator.green.is_lit,
                         'green2': False
-                    });            
+                    });
                 ostate.save({'interval': inter['number'], 'duration': inter['duration'], 'accumulated': accumulated})            
                 sleep(inter['duration'])
                 accumulated += inter['duration']
@@ -115,7 +171,7 @@ if state is not None and state['working'] == False:
             state = ostate.get()
             plan = oplan.first({'active': True})
 
-            if plan['moments'] < plan['cycles']:
+            if plan is not None and plan['moments'] < plan['cycles']:
                 next = True
             else:
                 next = False
@@ -126,13 +182,13 @@ if state is not None and state['working'] == False:
                 next = False
 
             hour = datetime.datetime.now().strftime("%X")
-            if plan is not None and hour >= (plan['startHour'] + ':00') and hour <= (plan['endHour'] + ':00') and next == True:
+            if hour >= (state['startHour'] + ':00') and hour <= (state['endHour'] + ':00') and next == True:
                 next = True
             else:
                 next = False
+    
+    ostate.execute(False)
 
-
-    ostate.save({'working': False})
     print('task finised => ' + hour)
     
     dct = {}
