@@ -36,6 +36,6 @@ class Output:
         return result
 
     def deleteAll(self):
-        return self.db.outputs.delete_many({})
+        return self.db['outputs'].delete_many({})
        
 

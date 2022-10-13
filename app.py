@@ -52,9 +52,7 @@ def index():
             intervals.insert(inter['number']-1, inter)
         plan['intervals'] = intervals
         oplan.update(plan, {'intervals': plan['intervals']})
-
-
-
+               
     templateData = {
     	'state'  : state,
     	'plan'  : plan,
@@ -80,21 +78,23 @@ def manual(action):
     ostate = State()
     oplan = Plan()
     state = ostate.get()
+    plan = oplan.first()
     if state is not None:
         if action == "red":
-            ostate.save({'action': 'on', 'state': 'ER', 'active': True, 'duration': -1, 'led': 'R'})
+            ostate.save({'action': 'on', 'state': 'ER', 'active': True, 'duration': -1, 'led': 'R', 'startHour': '00:00', 'endHour': '23:59'})
         if action == "off":
-            ostate.save({'action': 'off', 'state': 'OFF', 'active': False, 'duration': -1, 'led': ''})
+            ostate.save({'action': 'off', 'state': 'OFF', 'active': False, 'duration': -1, 'led': '', 'startHour': '00:00', 'endHour': '23:59'})
         if action == "blink":
-            ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': -1, 'led': ''})
+            ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': -1, 'led': '', 'startHour': '00:00', 'endHour': '23:59'})
         if action == "plan":
-            ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': -1, 'led': ''})
+            ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': -1, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
         state_execute()
         state = ostate.get()
     plan = oplan.first({'active': True})
     templateData = {
     	'state'  : state,
-    	'plan'  : plan
+    	'plan'  : plan,
+        'host'  : lib.host()
 	}
     return render_template('index.html', **templateData)
 

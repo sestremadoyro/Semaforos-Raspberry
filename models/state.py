@@ -6,6 +6,8 @@ class State:
         'action': { type: 'string' },
         'led': { type: 'string' },
         'duration': { type: 'int' },
+        'startHour': { type: 'string' },
+        'endHour': { type: 'string' },
         'fases': [{ type: 'int' }],
         'active': [{ type: 'boolean' }],
         'executing': { type: 'datetime' },
