@@ -37,7 +37,7 @@ class Lib:
         oweek = Week()
         plans = oweek.getList({'day': dfw})
         
-        hour = datetime.datetime.now().strftime("%X")
+        hour = datetime.now().strftime("%X")
         console.log(plans);
         console.log(hour);
         
