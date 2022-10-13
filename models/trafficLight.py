@@ -8,12 +8,12 @@ class TLight:
 
     #[R, A, V]
     defaultList = [
-        { 'number': 1, 'pins': [22, 27, 17] },
-        { 'number': 2, 'pins': [11,  9, 10] },
-        { 'number': 3, 'pins': [13,  6,  5] },
-        { 'number': 4, 'pins': [16, 20, 21] },
-        { 'number': 5, 'pins': [25,  8,  7] },
-        { 'number': 6, 'pins': [18, 23, 24] }
+        { 'number': 1, 'pins': [17, 27, 22] },
+        { 'number': 2, 'pins': [10,  9, 11] },
+        { 'number': 3, 'pins': [ 5,  6, 13] },
+        { 'number': 4, 'pins': [21, 20, 16] },
+        { 'number': 5, 'pins': [ 7,  8, 25] },
+        { 'number': 6, 'pins': [24, 23, 18] }
     ]
 
     def __init__(self):

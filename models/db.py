@@ -11,7 +11,7 @@ class Db:
     def getClient(self):
         client = None
         count = 0
-        while client is None and count < 10: 
+        while client is None and count < 20: 
             try:
                 client = MongoClient(CONNECTION_STRING)
             except pymongo.errors.ConnectionFailure as e:
