@@ -38,10 +38,10 @@ class Lib:
         plans = oweek.getList({'day': dfw})
         
         hour = datetime.now().strftime("%X")
-        console.log(plans);
-        console.log(hour);
+        print(plans);
+        print(hour);
         
         for pl in plans:
             if pl['active'] and hour >= (pl['start'] + ':00') and hour < (pl['end'] + ':00'):
-                console.log(pl);
+                print(pl);
                 return
