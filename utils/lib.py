@@ -35,13 +35,22 @@ class Lib:
         dfw = self.weekday()
         
         oweek = Week()
+        ostate = State()
+        oplan = Plan()
+
         plans = oweek.getList({'day': dfw})
         
         hour = datetime.now().strftime("%X")
-        print(plans);
-        print(hour);
         
         for pl in plans:
             if pl['active'] and hour >= (pl['start'] + ':00') and hour < (pl['end'] + ':00'):
-                print(pl);
+                if pl['state'] == "ER":
+                    ostate.save({'action': 'on', 'state': 'ER', 'active': True, 'duration': -1, 'led': 'R'})
+                if pl['state'] == "TR":
+                    ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': -1, 'led': ''})
+                if pl['state'] == "FN" and pl['plan'] is not None:
+                    ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': -1, 'led': ''})
+                    oplan.deleteAll()
+                    oplan.create(pl['plan'])
+
                 return
