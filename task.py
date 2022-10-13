@@ -27,20 +27,21 @@ state = ostate.get()
 
 if state is not None and state['working'] == False:
 
-    lights = []
-    for tr in list:
-        lights.insert(tr['number'], TrafficLights(tr['pins'][0], tr['pins'][1], tr['pins'][2]))
+    if state['state'] != 'ER' and state['state'] != 'TR':
+        lights = []
+        for tr in list:
+            lights.insert(tr['number'], TrafficLights(tr['pins'][0], tr['pins'][1], tr['pins'][2]))
 
-    # turn leds OFF 
-    for x in lights:
-        x.off();
+        # turn leds OFF 
+        for x in lights:
+            x.off();
 
-    oplan = Plan()
-    plan = oplan.first({'active': True})
-    sen = Sensor()
+        oplan = Plan()
+        plan = oplan.first({'active': True})
+        sen = Sensor()
     
-    ooutput = Output()
-    hour = datetime.datetime.now().strftime("%X")
+        ooutput = Output()
+        hour = datetime.datetime.now().strftime("%X")
 
     if plan is not None and state['action'] == 'plan' and state['active'] and hour >= (plan['startHour'] + ':00') and hour < (plan['endHour'] + ':00'):
         print('task started => ' + hour)
