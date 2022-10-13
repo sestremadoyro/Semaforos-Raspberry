@@ -298,6 +298,7 @@ def state_execute():
                 actuator = lights[int(fase)-1]
                 actuator.off()
 
+            print(model)
             if model['active']:
                 for fase in model['fases']:
                     led = model['led']
