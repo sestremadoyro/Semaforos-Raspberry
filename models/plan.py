@@ -35,7 +35,7 @@ class Plan:
         return plan
 
     def deleteAll(self):
-        return self.db.plans.delete({})
+        return self.db['plans'].delete_many({})
 
     def getList(self, filter = {}):
         plans = self.db.plans.find(filter)
