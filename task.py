@@ -9,10 +9,15 @@ from models.plan import Plan
 from models.trafficLight import TLight
 from models.state import State
 from models.output import Output
+from models.week import Week
 from utils.sensor import Sensor
+from utils.lib import Lib
 import datetime
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
+
+lib = Lib()
+lib.verifyWeek()
 
 tlight = TLight()
 list = tlight.getLights()

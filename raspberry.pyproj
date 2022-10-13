@@ -66,6 +66,9 @@
     <Compile Include="models\trafficLight.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="models\week.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="task.py">
       <SubType>Code</SubType>
     </Compile>

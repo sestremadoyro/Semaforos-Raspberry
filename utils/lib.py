@@ -1,4 +1,8 @@
 import socket
+from models.plan import Plan
+from models.state import State
+from models.week import Week
+from datetime import datetime
 
 class Lib:
 
@@ -20,3 +24,24 @@ class Lib:
             'hostname': hostname,
             'ip': IP
         }
+
+    def weekday(self):
+        # get current datetime
+        dt = datetime.now()
+        # get day of week as an integer
+        return dt.isoweekday()
+    
+    def verifyWeek(self):
+        dfw = self.weekday()
+        
+        oweek = Week()
+        plans = oweek.getList({day: dfw})
+        
+        hour = datetime.datetime.now().strftime("%X")
+        console.log(plans);
+        console.log(hour);
+        
+        for pl in plans:
+            if pl['active'] and hour >= (pl['start'] + ':00') and hour < (pl['end'] + ':00'):
+                console.log(pl);
+                return
