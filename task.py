@@ -77,7 +77,7 @@ if state is not None and state['working'] == False and hour >= (state['startHour
             acum = acum + add
 
             state = ostate.get()
-            if state is not None and (state['action'] == 'on' and state['state'] == 'ER') or (state['action'] == 'blink' and state['state'] == 'TR') and state['active'] and next == True:
+            if state is not None and ((state['action'] == 'on' and state['state'] == 'ER') or (state['action'] == 'blink' and state['state'] == 'TR')) and state['active'] and next == True:
                 next = True
             else:
                 next = False
