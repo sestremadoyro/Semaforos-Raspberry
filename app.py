@@ -319,13 +319,6 @@ def state_execute():
                     if model['action'] == 'blink':
                         actuator.blink()
 
-                if led == 'R':
-                    print('rojo ' + actuator.is_lit)
-                if led == 'A':
-                    print('amber ' + actuator.is_lit)
-                if led == 'V':
-                    print('green ' + actuator.is_lit)
-                
                 if model['state'] == 'TR' and model['action'] == 'blink' and model['reds'] is not None:
                     for fase in model['reds']:
                         actuator = lights[int(fase)-1]
