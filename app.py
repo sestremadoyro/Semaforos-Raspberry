@@ -297,8 +297,10 @@ def state_execute():
             for fase in model['fases']:
                 actuator = lights[int(fase)-1]
                 actuator.off()
+            print('apagando')
 
             if model['active']:
+                print('activo')
                 for fase in model['fases']:
                     led = model['led']
                     actuator = lights[int(fase)-1]
@@ -318,13 +320,16 @@ def state_execute():
                         actuator.off()
                     if model['action'] == 'blink':
                         actuator.blink()
-
+                print('rojo ' + actuator.red.is_lit)
+                print('amber ' + actuator.red.amber)
+                print('green ' + actuator.red.green)
                 if model['state'] == 'TR' and model['action'] == 'blink' and model['reds'] is not None:
                     for fase in model['reds']:
                         actuator = lights[int(fase)-1]
                         actuator.amber.off()
                         actuator.red.blink()
 
+                print('ejecutando ')
                 ostate.execute(True)
 
                 exec = 'true'
@@ -334,7 +339,10 @@ def state_execute():
 
             if model['active'] == False:
                 ostate.execute(False)
-    sleep(1)
+
+    if model['action'] != 'off':
+        sleep(1)
+
     response = app.response_class(
         response = exec,
         status=200,
