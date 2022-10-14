@@ -298,6 +298,34 @@ def state_execute():
                 actuator = lights[int(fase)-1]
                 actuator.off()
 
+            if model['active']:
+                for fase in model['fases']:
+                    led = model['led']
+                    actuator = lights[int(fase)-1]
+                    if led == '' and model['action'] == 'blink':
+                        led = 'A'
+
+                    if led == 'R':
+                        actuator = actuator.red
+                    if led == 'A':
+                        actuator = actuator.amber
+                    if led == 'V':
+                        actuator = actuator.green
+                    actuator.off()
+                    if model['action'] == 'on':
+                        actuator.on()
+                    if model['action'] == 'off':
+                        actuator.off()
+                    if model['action'] == 'blink':
+                        actuator.blink()
+
+                if model['state'] == 'TR' and model['action'] == 'blink' and model['reds'] is not None:
+                    for fase in model['reds']:
+                        actuator = lights[int(fase)-1]
+                        actuator.amber.off()
+                        actuator.red.blink()
+                exec = 'true'
+
             plan_execute()
 
             if model['active'] == False:
@@ -354,64 +382,6 @@ def calibrate():
     }])
 
 
-def state_executeold():    
-    ostate = State()
-    model = ostate.get()
-    exec = 'false'
-
-    if model is not None:        
-        if model['action'] == 'plan':
-            plan_execute()
-        else:
-            for fase in model['fases']:
-                actuator = lights[int(fase)-1]
-                actuator.off()
-
-            if model['active']:
-                for fase in model['fases']:
-                    led = model['led']
-                    actuator = lights[int(fase)-1]
-                    if led == '' and model['action'] == 'blink':
-                        led = 'A'
-
-                    if led == 'R':
-                        actuator = actuator.red
-                    if led == 'A':
-                        actuator = actuator.amber
-                    if led == 'V':
-                        actuator = actuator.green
-                    actuator.off()
-                    if model['action'] == 'on':
-                        actuator.on()
-                    if model['action'] == 'off':
-                        actuator.off()
-                    if model['action'] == 'blink':
-                        actuator.blink()
-
-                if model['state'] == 'TR' and model['action'] == 'blink' and model['reds'] is not None:
-                    for fase in model['reds']:
-                        actuator = lights[int(fase)-1]
-                        actuator.amber.off()
-                        actuator.red.blink()
-
-                ostate.execute(True)
-
-                exec = 'true'
-                if model['duration'] > 0:
-                    sleep(model['duration'])
-                    for fase in model['fases']:
-                        actuator = lights[int(fase)-1]
-                        actuator.off()
-
-            if model['active'] == False:
-                ostate.execute(False)
-
-    response = app.response_class(
-        response = exec,
-        status=200,
-        mimetype='application/json'
-    )
-    return response
 
 @app.route("/host", methods=['GET'])
 def get_host():    
