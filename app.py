@@ -329,7 +329,8 @@ def state_execute():
 
                 exec = 'true'
 
-            plan_execute()
+            if model['action'] != 'off':
+                plan_execute()
 
             if model['active'] == False:
                 ostate.execute(False)
