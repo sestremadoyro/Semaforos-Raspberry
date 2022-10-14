@@ -40,12 +40,12 @@ class Lib:
 
     def getEndHour(self, start, duracion):
         seconds = ((int(start[0:2]) * 60 * 60) + (int(start[-2:]) * 60)) + duracion
-
+            
         seconds = seconds % (24 * 3600)
         hour = seconds // 3600
         seconds %= 3600
         minutes = seconds // 60
-        seconds %= 60
+        seconds %= 60 
      
         return "%02d:%02d" % (hour, minutes)
 
