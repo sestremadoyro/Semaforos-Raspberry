@@ -77,7 +77,7 @@ def manual():
             if request.form['duration'] is not None:
                 duration = int(request.form['duration']) * 60
 
-            startHour = datetime.datetime.now().strftime("%X")[0:5]
+            startHour = lib.getEndHour(datetime.datetime.now().strftime("%X")[0:5],-5)
             endHour = lib.getEndHour(startHour,duration)
 
             if action == "red":
