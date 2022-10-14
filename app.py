@@ -299,7 +299,7 @@ def state_execute():
                 actuator.off()
             print('apagando')
 
-            if model['active']:
+            if model['active'] and model['action'] != 'off':
                 print('activo')
                 for fase in model['fases']:
                     led = model['led']
@@ -316,13 +316,16 @@ def state_execute():
                     actuator.off()
                     if model['action'] == 'on':
                         actuator.on()
-                    if model['action'] == 'off':
-                        actuator.off()
                     if model['action'] == 'blink':
                         actuator.blink()
-                print('rojo ' + actuator.red.is_lit)
-                print('amber ' + actuator.red.amber)
-                print('green ' + actuator.red.green)
+
+                if led == 'R':
+                    print('rojo ' + actuator.is_lit)
+                if led == 'A':
+                    print('amber ' + actuator.is_lit)
+                if led == 'V':
+                    print('green ' + actuator.is_lit)
+                
                 if model['state'] == 'TR' and model['action'] == 'blink' and model['reds'] is not None:
                     for fase in model['reds']:
                         actuator = lights[int(fase)-1]
