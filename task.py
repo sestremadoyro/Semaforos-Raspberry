@@ -38,6 +38,7 @@ if state is not None and state['working'] == False and hour >= (state['startHour
         x.off();
     
     if ((state['action'] == 'on' and state['state'] == 'ER') or (state['action'] == 'blink' and state['state'] == 'TR')) and state['active'] and state['duration'] > 0:
+        print(hour + ' => ejecutando ' + state['action'])
         ostate.execute(True)
         next = True
 
@@ -98,6 +99,7 @@ if state is not None and state['working'] == False and hour >= (state['startHour
     plan = oplan.first({'active': True})
     
     if plan is not None and state['action'] == 'plan' and state['active']:
+        print(hour + ' => ejecutando Plan')
         sen = Sensor()    
         ooutput = Output()
 
