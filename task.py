@@ -37,7 +37,7 @@ if state is not None and state['working'] == False and hour >= (state['startHour
     for x in lights:
         x.off();
     
-    if (state['action'] == 'on' and state['state'] == 'ER') or (state['action'] == 'blink' and state['state'] == 'TR') and state['active']:
+    if ((state['action'] == 'on' and state['state'] == 'ER') or (state['action'] == 'blink' and state['state'] == 'TR')) and state['active'] and state['duration'] > 0:
         ostate.execute(True)
         next = True
 

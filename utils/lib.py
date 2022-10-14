@@ -51,12 +51,13 @@ class Lib:
         
         for pl in plans:
             if pl['active'] and hour >= (pl['start'] + ':00') and hour < (pl['end'] + ':00'):
+                secs = self.seconds(pl['startHour'],pl['endHour'])
                 if pl['state'] == "ER":
-                    ostate.save({'action': 'on', 'state': 'ER', 'active': True, 'duration': -1, 'led': 'R', 'startHour': pl['start'], 'endHour': pl['end']})
+                    ostate.save({'action': 'on', 'state': 'ER', 'active': True, 'duration': secs, 'led': 'R', 'startHour': pl['start'], 'endHour': pl['end']})
                 if pl['state'] == "TR":
-                    ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': -1, 'led': '', 'startHour': pl['start'], 'endHour': pl['end']})
+                    ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': secs, 'led': '', 'startHour': pl['start'], 'endHour': pl['end']})
                 if pl['state'] == "FN" and pl['plan'] is not None:
-                    ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': -1, 'led': '', 'startHour': pl['start'], 'endHour': pl['end']})
+                    ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': pl['start'], 'endHour': pl['end']})
                     plan = oplan.first({})
                     if plan is None:
                         oplan.create(pl['plan'])

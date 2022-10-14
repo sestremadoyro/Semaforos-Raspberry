@@ -87,7 +87,8 @@ def manual(action):
         if action == "blink":
             ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': -1, 'led': 'A', 'startHour': '00:00', 'endHour': '23:59'})
         if action == "plan":
-            ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': -1, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
+            secs = lib.seconds(plan['startHour'],plan['endHour'])
+            ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
         state_execute()
         state = ostate.get()
     plan = oplan.first({'active': True})
@@ -392,7 +393,6 @@ def get_host():
     return jsonify(lib.host())
 
 
-state_execute();
 
 if __name__ == "__main__":
    app.run(host='0.0.0.0', port=5000, debug=True)
