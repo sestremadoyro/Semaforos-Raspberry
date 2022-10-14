@@ -297,10 +297,8 @@ def state_execute():
             for fase in model['fases']:
                 actuator = lights[int(fase)-1]
                 actuator.off()
-            print('apagando')
 
             if model['active'] and model['action'] != 'off':
-                print('activo')
                 for fase in model['fases']:
                     led = model['led']
                     actuator = lights[int(fase)-1]
@@ -325,7 +323,6 @@ def state_execute():
                         actuator.amber.off()
                         actuator.red.blink()
 
-                print('ejecutando ')
                 ostate.execute(True)
 
                 exec = 'true'
