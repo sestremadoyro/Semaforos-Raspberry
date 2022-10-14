@@ -69,9 +69,9 @@ def manual():
     oplan = Plan()
     state = ostate.get()
     plan = oplan.first()
-    action = request.form['action']
-
+    
     if request.method == 'POST':
+        action = request.form['action']
         if state is not None:
             duration = 3600
             if request.form['duration'] is not None:
