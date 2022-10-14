@@ -18,6 +18,7 @@
 		                <h2> Estado Actual </h2>
 		                <h4> Hostname ==>  {{ host['hostname'] }}</h4>
 		                <h4> IP ==>  {{ host['ip'] }}</h4>
+                        <form method="post" action="/manual">
                         <table style="margin: 28px 0;">
                             {% if state is none %}
                             <tr>
@@ -31,19 +32,32 @@
                             {% endif %}
                             {% if state is not none %}
                             <tr>
-                                <td><a href="/manual/blink" class="button ambar" {% if state['working'] %} disabled {% endif %}>INTERMITENTE</a></td>
-                                <td><a href="/manual/red" class="button red" {% if state['working'] %} disabled {% endif %}>EMERGENCIA</a></td>
+                                <td colspan="2">
+                                    <input type="text" id="duration" name="duration" required value="60" style="width: 90px;"> Minutos
+                                </td>
                             </tr>
                             <tr>
-                                <td><a href="/manual/plan" class="button blue" {% if state['working'] %} disabled {% endif %}>EJECUTAR PLAN</a></td>
-                                <td><a href="/manual/off" class="button grey">APAGAR</a></td>
+                                <td><button type="submit" name="action" value="blink" class="button ambar" {% if state['working'] %} disabled {% endif %}>INTERMITENTE</button></td>
+                                <td><button type="submit" name="action" value="red" class="button red" {% if state['working'] %} disabled {% endif %}>EMERGENCIA</button></td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 8px;"><button type="submit" name="action" value="plan" class="button blue" {% if state['working'] %} disabled {% endif %}>EJECUTAR PLAN</button></td>
+                                <td style="padding-top: 8px;"><button type="submit" name="action" value="off" class="button grey">APAGAR</button></td>
                             </tr>                      
                             {% endif %}
                         </table>
-
+                        </form>
 		                <h4> HORARIO ==>  {{ state['startHour'] }} - {{ state['endHour'] }}</h4>
-		                <h4> EVENTO ==>  {{ state['action'] }}</h4>
-		                <h4> ESTADO ==>  {{ state['state'] }}</h4>
+		                <h4> EVENTO ==>  {% if state['action'] == 'blink' %} Blink {% endif %}
+                                         {% if state['action'] == 'on' %} Prendido {% endif %}
+                                         {% if state['action'] == 'off' %} Apagado {% endif %}
+                                         {% if state['action'] == 'plan' %} {{plan['name']}} {% endif %}
+                       </h4>
+		                <h4> ESTADO ==>  {% if state['state'] == 'ER' %} Emergencia Remota {% endif %}
+                                         {% if state['state'] == 'TR' %} Intermitente Remoto {% endif %}
+                                         {% if state['state'] == 'OFF' %} Apagado {% endif %}
+                                         {% if state['state'] == 'FN' %} Planificado {% endif %}
+                       </h4>
 		                <!--h4> LED ==>  {{ state['led'] }}</h4-->
                         {% if state['working'] %}
                         <h4 style="color:#27c327"> EN FUNCIONAMIENTO</h4>
@@ -91,7 +105,7 @@
                                 </tbody>
                             </table><br />                            
                             {% if plan is not none %}
-                            <button type="submit" class="button green">GUARDAR PLAN</button>
+                            <button type="submit" class="button lg green">GUARDAR PLAN</button>
                             {% endif %}
                         </form>
                     </div>

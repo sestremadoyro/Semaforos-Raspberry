@@ -67,12 +67,12 @@ if state is not None and state['working'] == False and hour >= (state['startHour
         
         secs = lib.seconds(state['startHour'],state['endHour'])
         acum = 0        
-        add = 30
+        add = 10
 
         while next == True:   
             sleep(add)
-            add = 30
-            if secs - acum < 30:
+            add = 10
+            if secs - acum < 10:
                 add = secs - acum
             acum = acum + add
 

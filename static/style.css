@@ -12,7 +12,7 @@ body {
     letter-spacing: 0.0892857143em;
     justify-content: center;
     outline: 0;
-    width:90%;
+    width: 160px;
     position: relative;
     text-decoration: none;
     text-indent: 0.0892857143em;
@@ -26,7 +26,7 @@ body {
     user-select: none;
     vertical-align: middle;
     white-space: nowrap;
-    height: 20px;
+    height: 28px;
     font: 15px Arial;
     text-decoration: none;
     background-color: #EEEEEE;
@@ -36,10 +36,10 @@ body {
     box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
 }
 
-button.button {
+button.lg {
     width: 200px;
-    height: 24px;
 }
+
 
 .button.red {    
     background-color: #F44336 !important;
@@ -76,6 +76,10 @@ button.button {
     background-color: rgb(159 159 159) !important;
     color: rgba(0, 0, 0, 0.26) !important;
     box-shadow: none;
+}
+
+.button.red[disabled], .button.ambar[disabled], .button.grey[disabled], .button.blue[disabled], .button.green[disabled] {
+    border-color: #cbcaca !important;
 }
 
 .card {

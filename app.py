@@ -10,6 +10,7 @@ from models.trafficLight import TLight
 from models.state import State
 from utils.sensor import Sensor
 from utils.lib import Lib
+import datetime
 app = Flask(__name__)
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -58,39 +59,39 @@ def index():
     	'plan'  : plan,
         'host'  : lib.host()
     }
-    #if state is not None:
-    #    templateData['action'] = state['action']
-    #    templateData['led'] = state['led']
-    #    templateData['duration'] = state['duration']
-    #    templateData['active'] = state['active']
-
-    #if plan is not None:
-    #    templateData['nroIntervals'] = plan['nroIntervals']
-    #    templateData['nroFases'] = plan['nroFases']
-    #    templateData['intervals'] = plan['intervals']
-    #    templateData['fases'] = plan['fases']
 
     return render_template('index.html', **templateData)
 
 
-@app.route("/manual/<action>")
-def manual(action):
+@app.route("/manual", methods=('GET', 'POST'))
+def manual():
     ostate = State()
     oplan = Plan()
     state = ostate.get()
     plan = oplan.first()
-    if state is not None:
-        if action == "red":
-            ostate.save({'action': 'on', 'state': 'ER', 'active': True, 'duration': -1, 'led': 'R', 'startHour': '00:00', 'endHour': '23:59'})
-        if action == "off":
-            ostate.save({'action': 'off', 'state': 'OFF', 'active': False, 'duration': -1, 'led': '', 'startHour': '00:00', 'endHour': '23:59'})
-        if action == "blink":
-            ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': -1, 'led': 'A', 'startHour': '00:00', 'endHour': '23:59'})
-        if action == "plan":
-            secs = lib.seconds(plan['startHour'],plan['endHour'])
-            ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
-        state_execute()
-        state = ostate.get()
+    action = request.form['action']
+
+    if request.method == 'POST':
+        if state is not None:
+            duration = 3600
+            if request.form['duration'] is not None:
+                duration = int(request.form['duration']) * 60
+
+            startHour = datetime.datetime.now().strftime("%X")[0:5]
+            endHour = lib.getEndHour(startHour,duration)
+
+            if action == "red":
+                ostate.save({'action': 'on', 'state': 'ER', 'active': True, 'duration': duration, 'led': 'R', 'startHour': startHour, 'endHour': endHour})
+            if action == "blink":
+                ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': duration, 'led': 'A', 'startHour': startHour, 'endHour': endHour})
+            if action == "off":
+                ostate.save({'action': 'off', 'state': 'OFF', 'active': False, 'duration': -1, 'led': '', 'startHour': '00:00', 'endHour': '23:59'})
+            if action == "plan":
+                secs = lib.seconds(plan['startHour'],plan['endHour'])
+                ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
+            state_execute()            
+
+    state = ostate.get()
     plan = oplan.first({'active': True})
     templateData = {
     	'state'  : state,
@@ -289,6 +290,75 @@ def state_execute():
     model = ostate.get()
     exec = 'false'
 
+    if model is not None:
+        if model['action'] == 'plan':
+            plan_execute()
+        else:
+            for fase in model['fases']:
+                actuator = lights[int(fase)-1]
+                actuator.off()
+
+            plan_execute()
+
+            if model['active'] == False:
+                ostate.execute(False)
+    sleep(1)
+    response = app.response_class(
+        response = exec,
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+@app.route("/calibrate", methods=['GET'])
+def calibrate():    
+    sen = Sensor()
+    actuator = lights[0]
+
+    off_min = 100
+    off_max = 0
+    actuator.off();
+    i = 1
+    while i <= 10:
+        value = sen.read()
+        if value < off_min:
+            off_min = value
+        if value > off_max:
+            off_max = value
+        sleep(200/1000)
+        i += 1
+
+    on_min = 100
+    on_max = 0
+    actuator.green.on();
+    i = 1
+    while i <= 10:
+        value = sen.read()
+        if value < on_min:
+            on_min = value
+        if value > on_max:
+            on_max = value
+        sleep(200/1000)
+        i += 1
+    
+    actuator.off();
+
+    return jsonify([{
+        'mode': 'OFF',
+        'min': off_min,
+        'max': off_max
+    },{
+        'mode': 'ON',
+        'min': on_min,
+        'max': on_max,
+    }])
+
+
+def state_executeold():    
+    ostate = State()
+    model = ostate.get()
+    exec = 'false'
+
     if model is not None:        
         if model['action'] == 'plan':
             plan_execute()
@@ -342,51 +412,6 @@ def state_execute():
         mimetype='application/json'
     )
     return response
-
-
-@app.route("/calibrate", methods=['GET'])
-def calibrate():    
-    sen = Sensor()
-    actuator = lights[0]
-
-    off_min = 100
-    off_max = 0
-    actuator.off();
-    i = 1
-    while i <= 10:
-        value = sen.read()
-        if value < off_min:
-            off_min = value
-        if value > off_max:
-            off_max = value
-        sleep(200/1000)
-        i += 1
-
-    on_min = 100
-    on_max = 0
-    actuator.green.on();
-    i = 1
-    while i <= 10:
-        value = sen.read()
-        if value < on_min:
-            on_min = value
-        if value > on_max:
-            on_max = value
-        sleep(200/1000)
-        i += 1
-    
-    actuator.off();
-
-    return jsonify([{
-        'mode': 'OFF',
-        'min': off_min,
-        'max': off_max
-    },{
-        'mode': 'ON',
-        'min': on_min,
-        'max': on_max,
-    }])
-
 
 @app.route("/host", methods=['GET'])
 def get_host():    

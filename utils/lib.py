@@ -37,6 +37,18 @@ class Lib:
         sec1 = (int(start[0:2]) * 60 * 60) + (int(start[-2:]) * 60) 
         sec2 = (int(end[0:2]) * 60 * 60) + (int(end[-2:]) * 60) 
         return sec2 - sec1
+
+    def getEndHour(self, start, duracion):
+        seconds = ((int(start[0:2]) * 60 * 60) + (int(start[-2:]) * 60)) + duracion
+
+        seconds = seconds % (24 * 3600)
+        hour = seconds // 3600
+        seconds %= 3600
+        minutes = seconds // 60
+        seconds %= 60
+     
+        return "%d:%02d" % (hour, minutes)
+
     
     def verifyWeek(self):
         dfw = self.weekday()
