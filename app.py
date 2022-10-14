@@ -324,6 +324,9 @@ def state_execute():
                         actuator = lights[int(fase)-1]
                         actuator.amber.off()
                         actuator.red.blink()
+
+                ostate.execute(True)
+
                 exec = 'true'
 
             plan_execute()
