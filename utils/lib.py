@@ -47,7 +47,7 @@ class Lib:
         minutes = seconds // 60
         seconds %= 60
      
-        return "%d:%02d" % (hour, minutes)
+        return "%02d:%02d" % (hour, minutes)
 
     
     def verifyWeek(self):
