@@ -108,7 +108,6 @@ def manual():
             if action == "plan":
                 secs = lib.seconds(plan['startHour'],plan['endHour'])
                 ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
-                forceWork = True
             state_execute()
 
     state = ostate.get()
@@ -339,7 +338,7 @@ def state_execute():
             ostate.execute(False)
 
             import os
-            cmd = 'sudo pkill -f task.py'
+            cmd = 'pkill -f task.py'
             os.system(cmd)
 
             if model['active'] and model['action'] != 'off':
