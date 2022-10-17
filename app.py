@@ -259,8 +259,8 @@ def plan_execute():
         print('task.py')
         import subprocess
         cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
-        result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #result2 = subprocess.check_output([cmd], shell=True, stderr=subprocess.STDOUT)
+        #result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = subprocess.check_output([cmd], shell=True, stderr=subprocess.STDOUT)
         print(result)
 
     response = app.response_class(
