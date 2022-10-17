@@ -91,7 +91,7 @@ def manual():
 
     original_stdout = sys.stdout # Save a reference to the original standard output
 
-    with open('test.txt', 'w') as f:
+    with open('manual.txt', 'w') as f:
         sys.stdout = f # Change the standard output to the file we created.
         
         if request.method == 'POST':
@@ -258,7 +258,7 @@ def plan_execute():
     if model['working'] == False:
         print('task.py')
         import subprocess
-        cmd='nohup python -u task.py > cron.log &'
+        cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
         subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     response = app.response_class(
