@@ -11,6 +11,7 @@ from models.state import State
 from utils.sensor import Sensor
 from utils.lib import Lib
 import datetime
+import os
 app = Flask(__name__)
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -323,34 +324,39 @@ def state_execute():
                 actuator = lights[int(fase)-1]
                 actuator.off()
 
-            if model['active'] and model['action'] != 'off':
-                for fase in model['fases']:
-                    led = model['led']
-                    actuator = lights[int(fase)-1]
-                    if led == '' and model['action'] == 'blink':
-                        led = 'A'
+            #if model['active'] and model['action'] != 'off':
+            #    for fase in model['fases']:
+            #        led = model['led']
+            #        actuator = lights[int(fase)-1]
+            #        if led == '' and model['action'] == 'blink':
+            #            led = 'A'
 
-                    if led == 'R':
-                        actuator = actuator.red
-                    if led == 'A':
-                        actuator = actuator.amber
-                    if led == 'V':
-                        actuator = actuator.green
-                    actuator.off()
-                    if model['action'] == 'on':
-                        actuator.on()
-                    if model['action'] == 'blink':
-                        actuator.blink()
+            #        if led == 'R':
+            #            actuator = actuator.red
+            #        if led == 'A':
+            #            actuator = actuator.amber
+            #        if led == 'V':
+            #            actuator = actuator.green
+            #        actuator.off()
+            #        if model['action'] == 'on':
+            #            actuator.on()
+            #        if model['action'] == 'blink':
+            #            actuator.blink()
 
-                if model['state'] == 'TR' and model['action'] == 'blink' and model['reds'] is not None:
-                    for fase in model['reds']:
-                        actuator = lights[int(fase)-1]
-                        actuator.amber.off()
-                        actuator.red.blink()
+            #    if model['state'] == 'TR' and model['action'] == 'blink' and model['reds'] is not None:
+            #        for fase in model['reds']:
+            #            actuator = lights[int(fase)-1]
+            #            actuator.amber.off()
+            #            actuator.red.blink()
 
-                ostate.execute(True)
+            #    ostate.execute(True)
 
-                exec = 'true'
+            exec = 'true'
+
+            if model['action'] == 'off':
+                ostate.execute(False)
+                cmd = 'pkill -f taks.py'
+                os.system(cmd)
 
             if model['action'] != 'off':
                 plan_execute()
