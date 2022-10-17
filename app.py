@@ -333,6 +333,9 @@ def state_execute():
         else:
             for fase in model['fases']:
                 actuator = lights[int(fase)-1]
+                actuator.red.off()
+                actuator.amber.off()
+                actuator.green.off()
                 actuator.off()
 
             ostate.execute(False)
