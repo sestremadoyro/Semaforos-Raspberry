@@ -174,10 +174,10 @@ if state is not None and state['working'] == False and hour >= (state['startHour
             state = ostate.get()
             plan = oplan.first({'active': True})
 
-            if plan is not None and plan['moments'] < plan['cycles']:
-                next = True
-            else:
-                next = False
+            #if plan is not None and plan['moments'] < plan['cycles']:
+            #    next = True
+            #else:
+            #    next = False
                        
             if state is not None and state['action'] == 'plan' and state['active'] and next == True:
                 next = True
@@ -189,6 +189,7 @@ if state is not None and state['working'] == False and hour >= (state['startHour
                 next = True
             else:
                 next = False
+            
         print('Finalizando Plan => ' + hour)
     
     ostate.execute(False)
@@ -198,6 +199,6 @@ if state is not None and state['working'] == False and hour >= (state['startHour
     
     dct = {}
     dct.__setitem__('a', 21)
-    #print(dct)
+    print(dct)
 
     sys.exit()

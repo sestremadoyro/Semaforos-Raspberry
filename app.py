@@ -252,6 +252,14 @@ def plan_execute():
         #o, e = proc.communicate()
         #print('Error: '  + e.decode('ascii'))
 
+        #import subprocess, signal
+        #subprocess.Popen(['python3', 'my_script.py'],
+        #   stdin = subprocess.DEVNULL,
+        #   stdout = open('nohup.out', 'w'),
+        #   stderr = subprocess.STDOUT,
+        #   start_new_session = True,
+        #   preexec_fn = (lambda: signal.signal(signal.NOHUP, signal.SIG_IGN)))
+
     response = app.response_class(
         response='true',
         status=200,
