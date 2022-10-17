@@ -81,11 +81,11 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        {% for f in leds %}
+                                        {% for led in leds %}
                                         <th>
-                                            <a class="button xs green" {% if leds[f] is not none and leds[f].green == False %} disabled {% endif %} href="#">V</a>
-                                            <a class="button xs ambar" {% if leds[f] is not none and leds[f].amber == False %} disabled {% endif %} href="#">A</a>
-                                            <a class="button xs red"   {% if leds[f] is not none and leds[f].red == False %} disabled {% endif %} href="#">R</a>
+                                            <a class="button xs green" {% if led.green == False %} disabled {% endif %} href="#">V</a>
+                                            <a class="button xs ambar" {% if led.amber == False %} disabled {% endif %} href="#">A</a>
+                                            <a class="button xs red"   {% if led.red == False %} disabled {% endif %} href="#">R</a>
                                         </th>
                                         {% endfor %}
                                         <th></th>
