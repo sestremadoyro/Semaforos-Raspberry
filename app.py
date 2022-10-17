@@ -87,38 +87,29 @@ def manual():
     forceWork = False
     
 
-    import sys
+    if request.method == 'POST':
+        action = request.form['action']
+        if state is not None:
+            duration = 3600
+            if request.form['duration'] is not None:
+                duration = int(request.form['duration']) * 60
 
-    original_stdout = sys.stdout # Save a reference to the original standard output
+            startHour = lib.getEndHour(datetime.datetime.now().strftime("%X")[0:5],-5)
+            endHour = lib.getEndHour(startHour,duration)
 
-    with open('manual.txt', 'w') as f:
-        sys.stdout = f # Change the standard output to the file we created.
-        
-        if request.method == 'POST':
-            action = request.form['action']
-            if state is not None:
-                duration = 3600
-                if request.form['duration'] is not None:
-                    duration = int(request.form['duration']) * 60
-
-                startHour = lib.getEndHour(datetime.datetime.now().strftime("%X")[0:5],-5)
-                endHour = lib.getEndHour(startHour,duration)
-
-                if action == "red":
-                    ostate.save({'action': 'on', 'state': 'ER', 'active': True, 'duration': duration, 'led': 'R', 'startHour': startHour, 'endHour': endHour})
-                    forceWork = True
-                if action == "blink":
-                    ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': duration, 'led': 'A', 'startHour': startHour, 'endHour': endHour})
-                    forceWork = True
-                if action == "off":
-                    ostate.save({'action': 'off', 'state': 'OFF', 'active': False, 'duration': -1, 'led': '', 'startHour': '00:00', 'endHour': '23:59'})
-                if action == "plan":
-                    secs = lib.seconds(plan['startHour'],plan['endHour'])
-                    ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
-                    forceWork = True
-                state_execute()
-
-    sys.stdout = original_stdout
+            if action == "red":
+                ostate.save({'action': 'on', 'state': 'ER', 'active': True, 'duration': duration, 'led': 'R', 'startHour': startHour, 'endHour': endHour})
+                forceWork = True
+            if action == "blink":
+                ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': duration, 'led': 'A', 'startHour': startHour, 'endHour': endHour})
+                forceWork = True
+            if action == "off":
+                ostate.save({'action': 'off', 'state': 'OFF', 'active': False, 'duration': -1, 'led': '', 'startHour': '00:00', 'endHour': '23:59'})
+            if action == "plan":
+                secs = lib.seconds(plan['startHour'],plan['endHour'])
+                ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
+                forceWork = True
+            state_execute()
 
     state = ostate.get()
 
@@ -254,9 +245,7 @@ def plan_execute():
     ostate = State()
     model = ostate.get()
 
-    print(model['working'])
     if model['working'] == False:
-        print('task.py')
         import subprocess
         #import sys
         cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
@@ -339,7 +328,6 @@ def state_execute():
     model = ostate.get()
     exec = 'false'
 
-    print('state_execute')
     if model is not None:
         if model['action'] == 'plan':
             plan_execute()
