@@ -258,13 +258,11 @@ def plan_execute():
     if model['working'] == False:
         print('task.py')
         import subprocess
-        import sys
-        #cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
-        proc = subprocess.Popen(['nohup', 'python', "/home/semaforo/api-raspberry/task.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-        #print(proc)
-        #proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
-        o, e = proc.communicate()
-        print('Error: '  + e.decode('ascii'))
+        #import sys
+        cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+        #o, e = proc.communicate()
+        #print('Error: '  + e.decode('ascii'))
 
     response = app.response_class(
         response='true',
@@ -350,47 +348,41 @@ def state_execute():
                 actuator = lights[int(fase)-1]
                 actuator.off()
 
-            #ostate.execute(False)
+            ostate.execute(False)
 
             import os
             cmd = 'sudo pkill -f task.py'
             os.system(cmd)
 
-            #if model['active'] and model['action'] != 'off':
-            #    for fase in model['fases']:
-            #        led = model['led']
-            #        actuator = lights[int(fase)-1]
-            #        if led == '' and model['action'] == 'blink':
-            #            led = 'A'
+            if model['active'] and model['action'] != 'off':
+                for fase in model['fases']:
+                    led = model['led']
+                    actuator = lights[int(fase)-1]
+                    if led == '' and model['action'] == 'blink':
+                        led = 'A'
 
-            #        if led == 'R':
-            #            actuator = actuator.red
-            #        if led == 'A':
-            #            actuator = actuator.amber
-            #        if led == 'V':
-            #            actuator = actuator.green
-            #        actuator.off()
-            #        if model['action'] == 'on':
-            #            actuator.on()
-            #        if model['action'] == 'blink':
-            #            actuator.blink()
+                    if led == 'R':
+                        actuator = actuator.red
+                    if led == 'A':
+                        actuator = actuator.amber
+                    if led == 'V':
+                        actuator = actuator.green
+                    actuator.off()
+                    if model['action'] == 'on':
+                        actuator.on()
+                    if model['action'] == 'blink':
+                        actuator.blink()
 
-            #    if model['state'] == 'TR' and model['action'] == 'blink' and model['reds'] is not None:
-            #        for fase in model['reds']:
-            #            actuator = lights[int(fase)-1]
-            #            actuator.amber.off()
-            #            actuator.red.blink()
+                if model['state'] == 'TR' and model['action'] == 'blink' and model['reds'] is not None:
+                    for fase in model['reds']:
+                        actuator = lights[int(fase)-1]
+                        actuator.amber.off()
+                        actuator.red.blink()
 
-            #    ostate.execute(True)
+                ostate.execute(True)
 
             exec = 'true'
-            ostate.execute(False)
-            print(model['action'])    
-
-            if model['action'] != 'off':
-                plan_execute()
-
-            print('plan_execute') 
+            
 
     #if model['action'] != 'off':
     #    sleep(1)
