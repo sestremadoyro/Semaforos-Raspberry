@@ -242,7 +242,7 @@ def plan_execute():
     if model['working'] == False:
         print('task.py')
         import subprocess
-        cmd='nohup python -u task.py > cron.log 2>&1'
+        cmd='nohup python -u task.py > cron.log &'
         subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     response = app.response_class(
