@@ -257,14 +257,14 @@ def plan_execute():
     print(model['working'])
     if model['working'] == False:
         print('task.py')
-        import os
-        cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
-        os.system(cmd)
-        #import subprocess
+        import subprocess
+        import sys
         #cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
+        proc = subprocess.Popen([sys.executable, "/home/semaforo/api-raspberry/task.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+        #print(proc)
         #proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
-        #o, e = proc.communicate()
-        #print('Error: '  + e.decode('ascii'))
+        o, e = proc.communicate()
+        print('Error: '  + e.decode('ascii'))
 
     response = app.response_class(
         response='true',
