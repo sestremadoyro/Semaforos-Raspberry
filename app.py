@@ -359,7 +359,7 @@ def state_execute():
             ostate.execute(False)
                 
             if model['action'] == 'off':
-                cmd = 'pkill -f taks.py'
+                cmd = 'sudo pkill -f taks.py'
                 os.system(cmd)
 
             if model['action'] != 'off':
