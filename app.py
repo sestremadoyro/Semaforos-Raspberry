@@ -382,7 +382,7 @@ def state_execute():
             print(model['action'])    
             if model['action'] == 'off':
                 import os
-                cmd = 'pkill -9 -f task.py'
+                cmd = 'sudo pkill -9 -f task.py'
                 result = os.system(cmd)
                 print(result)
 
