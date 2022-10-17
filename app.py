@@ -328,6 +328,7 @@ def state_execute():
                 actuator = lights[int(fase)-1]
                 actuator.off()
 
+            print('apagados')
             #if model['active'] and model['action'] != 'off':
             #    for fase in model['fases']:
             #        led = model['led']
@@ -357,7 +358,7 @@ def state_execute():
 
             exec = 'true'
             ostate.execute(False)
-                
+            print(model['action'])    
             if model['action'] == 'off':
                 cmd = 'sudo pkill -f taks.py'
                 os.system(cmd)
@@ -365,6 +366,8 @@ def state_execute():
             if model['action'] != 'off':
                 plan_execute()
 
+            print('plan_execute')   
+            print(model['active'])   
             if model['active'] == False:
                 ostate.execute(False)
 
