@@ -98,15 +98,17 @@ def manual():
 
             if action == "red":
                 ostate.save({'action': 'on', 'state': 'ER', 'active': True, 'duration': duration, 'led': 'R', 'startHour': startHour, 'endHour': endHour})
+                forceWork = True
             if action == "blink":
                 ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': duration, 'led': 'A', 'startHour': startHour, 'endHour': endHour})
+                forceWork = True
             if action == "off":
                 ostate.save({'action': 'off', 'state': 'OFF', 'active': False, 'duration': -1, 'led': '', 'startHour': '00:00', 'endHour': '23:59'})
             if action == "plan":
                 secs = lib.seconds(plan['startHour'],plan['endHour'])
                 ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
+                forceWork = True
             state_execute()
-            forceWork = True
 
     state = ostate.get()
 
