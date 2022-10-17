@@ -102,7 +102,9 @@ def manual():
             if action == "plan":
                 secs = lib.seconds(plan['startHour'],plan['endHour'])
                 ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
-            state_execute()            
+            state_execute()                           
+
+    state = ostate.get()
 
     lights = []
     for fase in state['fases']:
@@ -114,7 +116,8 @@ def manual():
             'red': actuator.red.is_lit
         })
 
-    state = ostate.get()
+    console.log(lights)
+
     plan = oplan.first({'active': True})
     templateData = {
     	'state'  : state,
