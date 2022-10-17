@@ -66,7 +66,7 @@ def index():
             'red': actuator.red.is_lit
         })
 
-    console.log(leds)
+    print(leds)
             
     templateData = {
     	'state'  : state,
