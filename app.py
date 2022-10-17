@@ -249,7 +249,7 @@ def plan_execute():
         import subprocess
         #import sys
         cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+        subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         #o, e = proc.communicate()
         #print('Error: '  + e.decode('ascii'))
 
