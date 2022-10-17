@@ -36,6 +36,8 @@ for x in lights:
 
 ostate = State()
 ostate.execute(False)
+
+print('Aplicacion Iniciada')
   
 @app.route("/", methods=('GET', 'POST'))
 def index():

@@ -93,6 +93,7 @@ if state is not None and state['working'] == False and hour >= (state['startHour
                 next = True
             else:
                 next = False
+        print('Finalizado ' + state['action'] + ' => ' + hour)
 
     
     oplan = Plan()
@@ -188,6 +189,7 @@ if state is not None and state['working'] == False and hour >= (state['startHour
                 next = True
             else:
                 next = False
+        print('Finalizando Plan => ' + hour)
     
     ostate.execute(False)
 
