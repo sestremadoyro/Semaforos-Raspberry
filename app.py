@@ -257,12 +257,13 @@ def plan_execute():
     print(model['working'])
     if model['working'] == False:
         print('task.py')
-        import subprocess
+        import os
         cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
-        proc = subprocess.call(cmd, shell=True)
+        os.system(cmd)
+        #import subprocess
+        #cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
         #proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
         #o, e = proc.communicate()
-        print(proc)
         #print('Error: '  + e.decode('ascii'))
 
     response = app.response_class(
@@ -382,8 +383,7 @@ def state_execute():
             if model['action'] == 'off':
                 import os
                 cmd = 'sudo pkill -9 -f task.py'
-                result = os.system(cmd)
-                print(result)
+                os.system(cmd)
 
             if model['action'] != 'off':
                 plan_execute()
