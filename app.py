@@ -56,20 +56,22 @@ def index():
         plan['intervals'] = intervals
         oplan.update(plan, {'intervals': plan['intervals']})
 
-    lights = []
+    leds = []
     for fase in state['fases']:
         index = int(fase)-1
         actuator = lights[index]
-        lights.insert(fase,{
-            'green':actuator.green.is_lit,
+        leds.insert(fase,{
+            'green': actuator.green.is_lit,
             'amber': actuator.amber.is_lit,
             'red': actuator.red.is_lit
         })
+
+    console.log(leds)
             
     templateData = {
     	'state'  : state,
     	'plan'  : plan,
-    	'lights'  : lights,
+    	'leds'  : leds,
         'host'  : lib.host()
     }
 
@@ -106,23 +108,21 @@ def manual():
 
     state = ostate.get()
 
-    lights = []
+    leds = []
     for fase in state['fases']:
         index = int(fase)-1
         actuator = lights[index]
-        lights.insert(fase,{
+        leds.insert(fase,{
             'green': actuator.green.is_lit,
             'amber': actuator.amber.is_lit,
             'red': actuator.red.is_lit
         })
 
-    console.log(lights)
-
     plan = oplan.first({'active': True})
     templateData = {
     	'state'  : state,
     	'plan'  : plan,
-    	'lights'  : lights,
+    	'leds'  : leds,
         'host'  : lib.host()
 	}
     return render_template('index.html', **templateData)

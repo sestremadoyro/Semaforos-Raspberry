@@ -83,9 +83,9 @@
                                         <th></th>
                                         {% for f in plan['fases'] %}
                                         <th>
-                                            <a class="button xs green" {% if lights[f] is not none and !lights[f].green %} disabled {% endif %} href="#">V</a>
-                                            <a class="button xs ambar" {% if lights[f] is not none and !lights[f].amber %} disabled {% endif %} href="#">A</a>
-                                            <a class="button xs red"   {% if lights[f] is not none and !lights[f].red %} disabled {% endif %} href="#">R</a>
+                                            <a class="button xs green" {% if leds[f] is not none and !leds[f].green %} disabled {% endif %} href="#">V</a>
+                                            <a class="button xs ambar" {% if leds[f] is not none and !leds[f].amber %} disabled {% endif %} href="#">A</a>
+                                            <a class="button xs red"   {% if leds[f] is not none and !leds[f].red %} disabled {% endif %} href="#">R</a>
                                         </th>
                                         {% endfor %}
                                         <th></th>
