@@ -258,8 +258,9 @@ def plan_execute():
     if model['working'] == False:
         print('task.py')
         import subprocess
-        cmd='sudo nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
-        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
+        cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
+        proc = subprocess.call(cmd, shell=True)
+        #proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
         o, e = proc.communicate()
 
         print('Output: ' + o.decode('ascii'))
