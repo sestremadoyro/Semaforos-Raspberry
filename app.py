@@ -11,7 +11,6 @@ from models.state import State
 from utils.sensor import Sensor
 from utils.lib import Lib
 import datetime
-import os
 app = Flask(__name__)
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -85,6 +84,7 @@ def manual():
     oplan = Plan()
     state = ostate.get()
     plan = oplan.first()
+    forceWork = False
     
     if request.method == 'POST':
         action = request.form['action']
@@ -105,9 +105,13 @@ def manual():
             if action == "plan":
                 secs = lib.seconds(plan['startHour'],plan['endHour'])
                 ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
-            state_execute()                           
+            state_execute()
+            forceWork = True
 
     state = ostate.get()
+
+    if forceWork == True:
+        state['working'] = True
 
     leds = []
     for fase in state['fases']:
@@ -320,6 +324,7 @@ def state_execute():
     model = ostate.get()
     exec = 'false'
 
+    print('state_execute')
     if model is not None:
         if model['action'] == 'plan':
             plan_execute()
@@ -328,7 +333,6 @@ def state_execute():
                 actuator = lights[int(fase)-1]
                 actuator.off()
 
-            print('apagados')
             #if model['active'] and model['action'] != 'off':
             #    for fase in model['fases']:
             #        led = model['led']
@@ -360,19 +364,18 @@ def state_execute():
             ostate.execute(False)
             print(model['action'])    
             if model['action'] == 'off':
+                import os
                 cmd = 'sudo pkill -f taks.py'
-                os.system(cmd)
+                result = os.system(cmd)
+                print(result)
 
             if model['action'] != 'off':
                 plan_execute()
 
-            print('plan_execute')   
-            print(model['active'])   
-            if model['active'] == False:
-                ostate.execute(False)
+            print('plan_execute') 
 
-    if model['action'] != 'off':
-        sleep(1)
+    #if model['action'] != 'off':
+    #    sleep(1)
 
     response = app.response_class(
         response = exec,
