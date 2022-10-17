@@ -260,7 +260,7 @@ def plan_execute():
         import subprocess
         import sys
         #cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/cron.log &'
-        proc = subprocess.Popen([sys.executable, "/home/semaforo/api-raspberry/task.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+        proc = subprocess.Popen(['nohup', 'python', "/home/semaforo/api-raspberry/task.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
         #print(proc)
         #proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
         o, e = proc.communicate()
@@ -350,6 +350,12 @@ def state_execute():
                 actuator = lights[int(fase)-1]
                 actuator.off()
 
+            #ostate.execute(False)
+
+            import os
+            cmd = 'sudo pkill -f task.py'
+            os.system(cmd)
+
             #if model['active'] and model['action'] != 'off':
             #    for fase in model['fases']:
             #        led = model['led']
@@ -380,10 +386,6 @@ def state_execute():
             exec = 'true'
             ostate.execute(False)
             print(model['action'])    
-            if model['action'] == 'off':
-                import os
-                cmd = 'sudo pkill -9 -f task.py'
-                os.system(cmd)
 
             if model['action'] != 'off':
                 plan_execute()
