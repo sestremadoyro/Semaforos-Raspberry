@@ -240,7 +240,7 @@ def plan_execute():
 
     if model['working'] == False:
         import subprocess
-        cmd='nohup python -u task.py > task.log &'
+        cmd='nohup python -u task.py > cron.log &'
         subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     response = app.response_class(
@@ -354,9 +354,9 @@ def state_execute():
             #    ostate.execute(True)
 
             exec = 'true'
-
+            ostate.execute(False)
+                
             if model['action'] == 'off':
-                ostate.execute(False)
                 cmd = 'pkill -f taks.py'
                 os.system(cmd)
 
