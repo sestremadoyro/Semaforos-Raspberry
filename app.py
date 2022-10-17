@@ -33,6 +33,8 @@ ledGrnSts = 0
 for x in lights:
   x.off();
 
+ostate = State()
+ostate.execute(False)
   
 @app.route("/", methods=('GET', 'POST'))
 def index():
@@ -53,10 +55,21 @@ def index():
             intervals.insert(inter['number']-1, inter)
         plan['intervals'] = intervals
         oplan.update(plan, {'intervals': plan['intervals']})
-               
+
+    lights = []
+    for fase in state['fases']:
+        index = int(fase)-1
+        actuator = lights[index]
+        lights.insert(fase,{
+            'green':actuator.green.is_lit,
+            'amber': actuator.amber.is_lit,
+            'red': actuator.red.is_lit
+        })
+            
     templateData = {
     	'state'  : state,
     	'plan'  : plan,
+    	'lights'  : lights,
         'host'  : lib.host()
     }
 
@@ -91,11 +104,22 @@ def manual():
                 ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
             state_execute()            
 
+    lights = []
+    for fase in state['fases']:
+        index = int(fase)-1
+        actuator = lights[index]
+        lights.insert(fase,{
+            'green': actuator.green.is_lit,
+            'amber': actuator.amber.is_lit,
+            'red': actuator.red.is_lit
+        })
+
     state = ostate.get()
     plan = oplan.first({'active': True})
     templateData = {
     	'state'  : state,
     	'plan'  : plan,
+    	'lights'  : lights,
         'host'  : lib.host()
 	}
     return render_template('index.html', **templateData)

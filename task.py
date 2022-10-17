@@ -28,7 +28,7 @@ state = ostate.get()
 hour = datetime.datetime.now().strftime("%X")
 
 if state is not None and state['working'] == False and hour >= (state['startHour'] + ':00') and hour < (state['endHour'] + ':00'):
-
+    print('Tarea iniciada => ' + datetime.datetime.now().strftime("%d/%m/%y %H:%M:%S.%f"))
     lights = []
     for tr in list:
         lights.insert(tr['number'], TrafficLights(tr['pins'][0], tr['pins'][1], tr['pins'][2]))
@@ -38,7 +38,7 @@ if state is not None and state['working'] == False and hour >= (state['startHour
         x.off();
     
     if ((state['action'] == 'on' and state['state'] == 'ER') or (state['action'] == 'blink' and state['state'] == 'TR')) and state['active'] and state['duration'] > 0:
-        print(hour + ' => ejecutando ' + state['action'])
+        print('Ejecutando ' + state['action'] + ' => ' + hour)
         ostate.execute(True)
         next = True
 
@@ -99,7 +99,7 @@ if state is not None and state['working'] == False and hour >= (state['startHour
     plan = oplan.first({'active': True})
     
     if plan is not None and state['action'] == 'plan' and state['active']:
-        print(hour + ' => ejecutando Plan')
+        print('Ejecutando Plan => ' + hour)
         sen = Sensor()    
         ooutput = Output()
 
@@ -144,10 +144,10 @@ if state is not None and state['working'] == False and hour >= (state['startHour
                         'green2': False
                     });
                 ostate.save({'interval': inter['number'], 'duration': inter['duration'], 'accumulated': accumulated})            
-                sleep(inter['duration'])
-                accumulated += inter['duration']
+                sleep(int(inter['duration']))
+                accumulated += int(inter['duration'])
                 #salida
-                output['duration'] += inter['duration']
+                output['duration'] += int(inter['duration'])
                 output['intervals'].insert(inter['number']-1,{
                     'number': inter['number'],
                     'duration': inter['duration'],                
@@ -191,10 +191,11 @@ if state is not None and state['working'] == False and hour >= (state['startHour
     
     ostate.execute(False)
 
-    print('task finised => ' + hour)
+    print('Tarea Finalizada => ' + datetime.datetime.now().strftime("%d/%m/%y %H:%M:%S.%f"))
+    print('----------------')
     
     dct = {}
     dct.__setitem__('a', 21)
-    print(dct)
+    #print(dct)
 
     sys.exit()

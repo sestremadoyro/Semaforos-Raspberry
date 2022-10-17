@@ -40,6 +40,12 @@ button.lg {
     width: 200px;
 }
 
+a.xs {
+    padding: 1px 3px 1px 3px;
+    width: 24px;
+    height: 24px;
+    margin-right: 4px;
+}
 
 .button.red {    
     background-color: #F44336 !important;

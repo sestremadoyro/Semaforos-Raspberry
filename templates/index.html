@@ -78,6 +78,19 @@
                                         <th>DURACI&Oacute;N</th>
                                     </tr>
                                 </thead>
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        {% for f in plan['fases'] %}
+                                        <th>
+                                            <a class="button xs green" {% if !lights[f].green %} disabled {% endif %} href="#">V</a>
+                                            <a class="button xs ambar" {% if !lights[f].amber %} disabled {% endif %} href="#">A</a>
+                                            <a class="button xs red"   {% if !lights[f].red %} disabled {% endif %} href="#">R</a>
+                                        </th>
+                                        {% endfor %}
+                                        <th></th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     {% for inter in plan['intervals'] %}
                                     <tr>
