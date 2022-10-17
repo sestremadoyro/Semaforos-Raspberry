@@ -238,7 +238,9 @@ def plan_execute():
     ostate = State()
     model = ostate.get()
 
+    print(model['working'])
     if model['working'] == False:
+        print(model['task.py'])
         import subprocess
         cmd='nohup python -u task.py > cron.log 2>&1'
         subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
