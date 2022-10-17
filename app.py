@@ -60,13 +60,11 @@ def index():
     for fase in state['fases']:
         index = int(fase)-1
         actuator = lights[index]
-        leds.insert(fase,{
+        leds.insert(index,{
             'green': actuator.green.is_lit,
             'amber': actuator.amber.is_lit,
             'red': actuator.red.is_lit
         })
-
-    print(leds)
             
     templateData = {
     	'state'  : state,
@@ -112,7 +110,7 @@ def manual():
     for fase in state['fases']:
         index = int(fase)-1
         actuator = lights[index]
-        leds.insert(fase,{
+        leds.insert(index,{
             'green': actuator.green.is_lit,
             'amber': actuator.amber.is_lit,
             'red': actuator.red.is_lit
