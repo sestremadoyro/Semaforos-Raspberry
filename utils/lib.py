@@ -54,6 +54,13 @@ class Lib:
         cmd = 'pkill -f task.py'
         subprocess.run(cmd)
 
+    def read(self):
+        import os
+        os.system('ls > output.txt')
+        file = open('output.txt','r')
+        print(file.read())
+
+
     def verifyWeek(self):
         dfw = self.weekday()
         

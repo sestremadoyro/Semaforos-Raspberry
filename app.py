@@ -349,7 +349,8 @@ def state_execute():
 
             ostate.execute(False)
 
-            lib.killTask()
+            #lib.killTask()
+            lib.read()
 
             exec = 'true'
         
