@@ -247,8 +247,9 @@ def plan_execute():
     if model['working'] == False:
         import subprocess
         #import sys
-        cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/manual.log &'
-        subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/manual.log &'
+        subprocess.run(["python", "task.py > /home/semaforo/api-raspberry/manual.log &"])
+        #subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         #o, e = proc.communicate()
         #print('Error: '  + e.decode('ascii'))
 

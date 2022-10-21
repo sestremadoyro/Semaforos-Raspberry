@@ -199,6 +199,6 @@ if state is not None and state['working'] == False and hour >= (state['startHour
     
     dct = {}
     dct.__setitem__('a', 21)
-    print(dct)
+    #print(dct)
 
     sys.exit()
