@@ -349,9 +349,11 @@ def state_execute():
 
             ostate.execute(False)
 
-            import os
-            cmd = 'pkill -f task.py'
-            os.system(cmd)
+            lib.killTask()
+
+            exec = 'true'
+        
+            plan_execute()   
 
             #if model['active'] and model['action'] != 'off':
             #    for fase in model['fases']:
@@ -379,10 +381,7 @@ def state_execute():
             #            actuator.red.blink()
 
             #    ostate.execute(True)
-
-            exec = 'true'
-        
-            plan_execute()    
+ 
 
     #if model['action'] != 'off':
     #    sleep(1)

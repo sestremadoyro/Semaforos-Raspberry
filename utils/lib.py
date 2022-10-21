@@ -48,8 +48,12 @@ class Lib:
         seconds %= 60
      
         return "%02d:%02d" % (hour, minutes)
+        
+    def killTask(self, start, duracion):
+        import subprocess
+        cmd = 'pkill -f task.py'
+        subprocess.run(cmd)
 
-    
     def verifyWeek(self):
         dfw = self.weekday()
         
