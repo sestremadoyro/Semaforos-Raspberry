@@ -353,35 +353,36 @@ def state_execute():
             cmd = 'pkill -f task.py'
             os.system(cmd)
 
-            if model['active'] and model['action'] != 'off':
-                for fase in model['fases']:
-                    led = model['led']
-                    actuator = lights[int(fase)-1]
-                    if led == '' and model['action'] == 'blink':
-                        led = 'A'
+            #if model['active'] and model['action'] != 'off':
+            #    for fase in model['fases']:
+            #        led = model['led']
+            #        actuator = lights[int(fase)-1]
+            #        if led == '' and model['action'] == 'blink':
+            #            led = 'A'
 
-                    if led == 'R':
-                        actuator = actuator.red
-                    if led == 'A':
-                        actuator = actuator.amber
-                    if led == 'V':
-                        actuator = actuator.green
-                    actuator.off()
-                    if model['action'] == 'on':
-                        actuator.on()
-                    if model['action'] == 'blink':
-                        actuator.blink()
+            #        if led == 'R':
+            #            actuator = actuator.red
+            #        if led == 'A':
+            #            actuator = actuator.amber
+            #        if led == 'V':
+            #            actuator = actuator.green
+            #        actuator.off()
+            #        if model['action'] == 'on':
+            #            actuator.on()
+            #        if model['action'] == 'blink':
+            #            actuator.blink()
 
-                if model['state'] == 'TR' and model['action'] == 'blink' and model['reds'] is not None:
-                    for fase in model['reds']:
-                        actuator = lights[int(fase)-1]
-                        actuator.amber.off()
-                        actuator.red.blink()
+            #    if model['state'] == 'TR' and model['action'] == 'blink' and model['reds'] is not None:
+            #        for fase in model['reds']:
+            #            actuator = lights[int(fase)-1]
+            #            actuator.amber.off()
+            #            actuator.red.blink()
 
-                ostate.execute(True)
+            #    ostate.execute(True)
 
             exec = 'true'
-            
+        
+            plan_execute()    
 
     #if model['action'] != 'off':
     #    sleep(1)
