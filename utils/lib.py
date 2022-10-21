@@ -49,7 +49,7 @@ class Lib:
      
         return "%02d:%02d" % (hour, minutes)
         
-    def killTask(self, start, duracion):
+    def killTask():
         import subprocess
         cmd = 'pkill -f task.py'
         subprocess.run(cmd)
