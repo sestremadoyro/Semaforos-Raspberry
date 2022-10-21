@@ -353,7 +353,8 @@ def state_execute():
 
             exec = 'true'
         
-            plan_execute()   
+            if model['action'] != 'off':
+                plan_execute()   
 
             #if model['active'] and model['action'] != 'off':
             #    for fase in model['fases']:
