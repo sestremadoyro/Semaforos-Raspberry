@@ -127,7 +127,7 @@ if state is not None and isRunning == False and state['working'] == False and ho
             created = datetime.datetime.now()
 
             out = ooutput.last()
-            if datetime.datetime.now().strftime("%Y-%m-%d") > out['created'].strftime("%Y-%m-%d"):
+            if out is not None and datetime.datetime.now().strftime("%Y-%m-%d") > out['created'].strftime("%Y-%m-%d"):
                 plan['moments'] = 1
 
             output = { 
