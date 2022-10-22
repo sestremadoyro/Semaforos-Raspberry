@@ -3,6 +3,7 @@
 '''
 import RPi.GPIO as GPIO
 import sys
+import os    
 from time import sleep
 from gpiozero import LED, TrafficLights
 from models.plan import Plan
@@ -27,7 +28,20 @@ state = ostate.get()
 
 hour = datetime.datetime.now().strftime("%X")
 
-if state is not None and state['working'] == False and hour >= (state['startHour'] + ':00') and hour < (state['endHour'] + ':00'):
+isRunning = lib.taskRunning()
+
+if state is not None and isRunning == True and state['working'] == False:
+    ostate.execute(True)
+    #os.system("sudo pkill -f task.py")
+    sys.exit()
+
+
+if state is not None and isRunning == False and state['working'] == True:
+    ostate.execute(False)
+    state['working'] = False
+
+
+if state is not None and isRunning == False and state['working'] == False and hour >= (state['startHour'] + ':00') and hour < (state['endHour'] + ':00'):
     print('Tarea iniciada => ' + datetime.datetime.now().strftime("%d/%m/%y %H:%M:%S.%f"))
     lights = []
     for tr in list:
@@ -111,6 +125,11 @@ if state is not None and state['working'] == False and hour >= (state['startHour
         
         while next == True:   
             created = datetime.datetime.now()
+
+            out = ooutput.last()
+            if datetime.datetime.now().strftime("%Y-%m-%d") > out['created'].strftime("%Y-%m-%d"):
+                plan['moments'] = 1
+
             output = { 
                 'year': created.year,
                 'month': created.month,
@@ -202,3 +221,4 @@ if state is not None and state['working'] == False and hour >= (state['startHour
     #print(dct)
 
     sys.exit()
+

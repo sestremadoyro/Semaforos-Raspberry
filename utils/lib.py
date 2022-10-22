@@ -1,4 +1,6 @@
 import socket
+import os
+import sys
 from models.plan import Plan
 from models.state import State
 from models.week import Week
@@ -50,15 +52,41 @@ class Lib:
         return "%02d:%02d" % (hour, minutes)
         
     def killTask(self):
-        import subprocess
-        cmd = 'pkill -f task.py'
-        subprocess.run(cmd)
+        lines = self.execute("sudo pkill -f task.py")
+        print(lines)
+        
+    
+    def execute(self, command):
+        from subprocess import PIPE, run
 
-    def read(self):
-        import os
-        os.system('ls > output.txt')
-        file = open('output.txt','r')
-        print(file.read())
+        result = run(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
+        return result.stdout
+
+
+    def taskRunning(self):               
+        lines = self.execute("ps ax | grep task.py").splitlines()
+
+        same = 0
+        count1 = 0
+        count2 = 0
+        pid = os.getpid()
+        
+        if len(lines) > 1:
+            for lin in lines:
+                if '/bin/python' in lin:
+                    if str(pid - 1) in lin or str(pid) in lin:
+                        same = same + 1
+                    else:
+                        if '/bin/sh' in lin:
+                            count1 = count1 + 1
+                        else:
+                            count2 = count2 + 1
+                                
+        if count2 > 1:
+            os.system("sudo pkill -f task.py")
+            count2 = 0
+
+        return count2 > 0
 
 
     def verifyWeek(self):

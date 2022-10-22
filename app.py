@@ -32,11 +32,7 @@ ledGrnSts = 0
 # turn leds OFF 
 for x in lights:
   x.off();
-
-ostate = State()
-ostate.execute(False)
-
-print('Aplicacion Iniciada')
+  
   
 @app.route("/", methods=('GET', 'POST'))
 def index():
@@ -98,16 +94,16 @@ def manual():
             endHour = lib.getEndHour(startHour,duration)
 
             if action == "red":
-                ostate.save({'action': 'on', 'state': 'ER', 'active': True, 'duration': duration, 'led': 'R', 'startHour': startHour, 'endHour': endHour})
+                ostate.save({'action': 'on', 'last_action': state['action'], 'state': 'ER', 'active': True, 'duration': duration, 'led': 'R', 'startHour': startHour, 'endHour': endHour})
                 forceWork = True
             if action == "blink":
-                ostate.save({'action': 'blink', 'state': 'TR', 'active': True, 'duration': duration, 'led': 'A', 'startHour': startHour, 'endHour': endHour})
+                ostate.save({'action': 'blink', 'last_action': state['action'], 'state': 'TR', 'active': True, 'duration': duration, 'led': 'A', 'startHour': startHour, 'endHour': endHour})
                 forceWork = True
             if action == "off":
-                ostate.save({'action': 'off', 'state': 'OFF', 'active': False, 'duration': -1, 'led': '', 'startHour': '00:00', 'endHour': '23:59'})
+                ostate.save({'action': 'off', 'last_action': state['action'], 'state': 'OFF', 'active': False, 'duration': -1, 'led': '', 'startHour': '00:00', 'endHour': '23:59'})
             if action == "plan":
                 secs = lib.seconds(plan['startHour'],plan['endHour'])
-                ostate.save({'action': 'plan', 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
+                ostate.save({'action': 'plan', 'last_action': state['action'], 'state': 'FN', 'active': True, 'duration': secs, 'led': '', 'startHour': plan['startHour'], 'endHour': plan['endHour']})
             state_execute()
 
     state = ostate.get()
@@ -246,20 +242,8 @@ def plan_execute():
 
     if model['working'] == False:
         import subprocess
-        #import sys
-        #cmd='nohup python -u /home/semaforo/api-raspberry/task.py > /home/semaforo/api-raspberry/manual.log &'
-        subprocess.run(["python", "task.py"])
-        #subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #o, e = proc.communicate()
-        #print('Error: '  + e.decode('ascii'))
-
-        #import subprocess, signal
-        #subprocess.Popen(['python3', 'my_script.py'],
-        #   stdin = subprocess.DEVNULL,
-        #   stdout = open('nohup.out', 'w'),
-        #   stderr = subprocess.STDOUT,
-        #   start_new_session = True,
-        #   preexec_fn = (lambda: signal.signal(signal.NOHUP, signal.SIG_IGN)))
+        import sys
+        subprocess.Popen([sys.executable, 'task.py'])
 
     response = app.response_class(
         response='true',
@@ -336,26 +320,32 @@ def state_execute():
     model = ostate.get()
     exec = 'false'
 
+    if (model['last_action'] is None):
+        model['last_action'] = ''
+
     if model is not None:
         if model['action'] == 'plan':
             plan_execute()
         else:
-            for fase in model['fases']:
-                actuator = lights[int(fase)-1]
-                actuator.red.off()
-                actuator.amber.off()
-                actuator.green.off()
-                actuator.off()
+            #last_action
+
+            if model['action'] != 'off' or (model['action'] == 'off' and model['last_action'] != 'plan'):
+                for fase in model['fases']:
+                    actuator = lights[int(fase)-1]
+                    actuator.red.off()
+                    actuator.amber.off()
+                    actuator.green.off()
+                    actuator.off()
 
             ostate.execute(False)
-
-            #lib.killTask()
-            lib.read()
-
+            
             exec = 'true'
         
             if model['action'] != 'off':
                 plan_execute()   
+
+            if model['action'] == 'off':
+                lib.killTask()
 
             #if model['active'] and model['action'] != 'off':
             #    for fase in model['fases']:

@@ -35,6 +35,10 @@ class Output:
         result = self.db.outputs.insert(data)
         return result
 
+    def last(self, data = {}):
+        result = self.db.outputs.find(data).sort('created',-1).limit(1)[0]
+        return result
+
     def deleteAll(self):
         return self.db['outputs'].delete_many({})
        
