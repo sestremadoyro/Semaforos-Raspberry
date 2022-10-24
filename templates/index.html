@@ -10,9 +10,12 @@
 	            element.setAttribute('class', 'color_' + element.value)
             }
 
+            {% if state['working'] %}
             setTimeout(() => {
               window.location = '/';
             }, "5000")
+            {% endif %}
+            
 
         </script>
 		<h1>Control Manual Raspberry</h1>		

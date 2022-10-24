@@ -6,9 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "raspberry", "raspberry.pyproj", "{2F1CD57B-68D5-4354-9F39-158BD043718F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{49A138AE-62E6-4803-8CFF-7DA208846A48}"
-	ProjectSection(SolutionItems) = preProject
-		bg.py = bg.py
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
