@@ -63,6 +63,9 @@
     <Compile Include="models\state.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="models\task.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="models\trafficLight.py">
       <SubType>Code</SubType>
     </Compile>
@@ -76,6 +79,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="utils\sensor.py" />
+    <Compile Include="work.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="wsgi.py" />
   </ItemGroup>
   <ItemGroup>
