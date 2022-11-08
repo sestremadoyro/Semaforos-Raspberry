@@ -6,7 +6,7 @@ import datetime
 lib = Lib()
 
 oTask = Task()
-list = oTask.getList({completed: False})
+list = oTask.getList({'completed': False})
 
 
 # GIT        => Actualizar App
