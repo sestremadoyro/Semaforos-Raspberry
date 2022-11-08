@@ -29,9 +29,12 @@ ledYlwSts = 0
 ledGrnSts = 0
 # Define button and PIR sensor pins as an input
 
+isRunning = lib.taskRunning()
+
 # turn leds OFF 
-for x in lights:
-  x.off();
+if isRunning == False:
+    for x in lights:
+        x.off();
   
   
 @app.route("/", methods=('GET', 'POST'))
