@@ -16,7 +16,7 @@ list = oTask.getList({'completed': False})
 for task in list:
     
     if task['type'] == 'GIT':
-        lib.execute([
+        commands = [
             "cd /home/semaforo/api-raspberry",
             "sudo git stash",
             "sudo git pull",
@@ -24,16 +24,22 @@ for task in list:
             "sudo chmod -R 777 /home/semaforo/api-raspberry",
             "sudo chmod +x task.py",
             "sudo chmod +x work.py",
-        ])
+        ];
+
+        for com in commands:
+            lib.execute(com)
 
     if task['type'] == 'RESTART':
         lib.execute("sudo systemctl restart raspberry")
 
     if task['type'] == 'DEL_LOG':
-        lib.execute([
+        commands = [
             "cd /home/semaforo/api-raspberry",
             "sudo rm cron.log"
-        ])
+        ];
+
+        for com in commands:
+            lib.execute(com)
 
     if task['type'] == 'OTHER':
         lib.execute(task.commands)
