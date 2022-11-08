@@ -32,7 +32,9 @@ ledGrnSts = 0
 isRunning = lib.taskRunning()
 
 # turn leds OFF 
-if isRunning == False:
+oeState = State()
+eestate = oeState.get()
+if isRunning == False and eestate['working'] == False:
     for x in lights:
         x.off();
   
